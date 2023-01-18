@@ -1,10 +1,12 @@
 package com.thore.bot.listeners;
+
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.Category;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +18,6 @@ public class VoiceListener extends ListenerAdapter {
     }
 
     final static CacheFlag CACHE_FLAG = CacheFlag.ACTIVITY;
-
 //    public void onGuildVoiceJoin(@NotNull GuildJoinEvent event) {
 //        onJoin(event.getGuild().getN
 //    }
