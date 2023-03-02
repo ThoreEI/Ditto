@@ -30,6 +30,8 @@ public class CommandListener extends ListenerAdapter {
         ArrayList <CommandData> commandDataList = new ArrayList<>();
         commandDataList.add(Commands.slash("hello", "greetings"));
         commandDataList.add(Commands.slash("joke", "something funny"));
+        commandDataList.add(Commands.slash("blackjack", "card game"));
+
         event.getGuild().updateCommands().addCommands(commandDataList).queue();
     }
 }
