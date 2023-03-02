@@ -1,28 +1,19 @@
 package com.thore.bot.games.blackJack.domain;
 
-public class Player {
-
-
-    private String username;
-    private Hand hand;
-    private int points = 0;
-
+public class Player extends Person {
+    private int money = 0;
 
 
     public Player(String username, Hand hand) {
-        this.username=username;
-        this.hand = hand;
+        super(username, hand);
+    }
+    public Player(String username, Hand hand, int money) { // TODO Ask using money
+        super(username, hand);
+        this.money += money;
     }
 
-    public String getUsername() {
-        return username;
-    }
 
-    public Hand getHand() {
-        return hand;
-    }
-
-    public int getPoints() {
-        return points;
+    public int getMoney() {
+        return money;
     }
 }
