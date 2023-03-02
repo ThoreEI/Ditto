@@ -14,7 +14,8 @@ import java.util.Objects;
 
 
 public class EventManager implements EventListener {
-    private final static long BOT_SPAM_ID = 1065096620636643410L;
+    // private final static String BOT_SPAM_ID = "1065096620636643410";
+
     @Override
     public void onEvent(@NotNull GenericEvent event) {
         if (event instanceof GuildMemberJoinEvent)
@@ -25,7 +26,6 @@ public class EventManager implements EventListener {
             onMessageReactionAdd((MessageReactionAddEvent) event);
     }
 
-
     public void onMessageReactionAdd(MessageReactionAddEvent event) {
         String user = Objects.requireNonNull(event.getUser()).getName();
         String emoji = event.getReaction().getEmoji().getAsReactionCode();
@@ -35,12 +35,12 @@ public class EventManager implements EventListener {
     }
 
     private void onMessageReceived(MessageReceivedEvent event) {
-        if (event.getAuthor().isBot())
-            return;
+//        if (event.getAuthor().isBot() || !event.getChannel().getId().equals(BOT_SPAM_ID))
+//            return;
         Message message = event.getMessage();
         String content = message.getContentRaw();
-        MessageChannel channel = event.getGuild().getTextChannelById(BOT_SPAM_ID);
-        if (content.equals("!card") && channel != null)
+        MessageChannel channel = event.getChannel(); // TODO: in bot spam channel
+        if (content.equals("!card"))
             Messenger.sendMessage(channel, content);
     }
 

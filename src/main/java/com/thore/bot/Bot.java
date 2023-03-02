@@ -12,11 +12,11 @@ import net.dv8tion.jda.api.utils.MemberCachePolicy;
 
 public class Bot {
     private static JDA JDA;
+    private static Dotenv CONFIG;
 
     public static void main(String[] args) throws InterruptedException {
-
-        Dotenv config = Dotenv.configure().load();
-        JDABuilder builder = JDABuilder.createDefault(config.get("TOKEN"));
+        CONFIG = Dotenv.configure().load();
+        JDABuilder builder = JDABuilder.createDefault(CONFIG.get("TOKEN"));
         builder.setStatus(OnlineStatus.ONLINE);
         builder.setMemberCachePolicy(MemberCachePolicy.ALL);
         builder.setActivity(Activity.watching("Everything"));
@@ -28,5 +28,9 @@ public class Bot {
 
     public static JDA getJDA() {
         return JDA;
+    }
+
+    public static Dotenv getConfig () {
+        return CONFIG;
     }
 }

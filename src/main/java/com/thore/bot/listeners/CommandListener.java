@@ -1,5 +1,6 @@
 package com.thore.bot.listeners;
 
+import com.thore.bot.Bot;
 import com.thore.bot.games.blackJack.blackJackGame.BlackJackGame;
 import com.thore.bot.io.loader.TxtFileLoader;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
@@ -14,6 +15,11 @@ import java.util.ArrayList;
 public class CommandListener extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
+        String currentChannel = event.getChannel().getId();
+        String botChannel = Bot.getConfig().get("BOT_CHANNEL");
+        if (!currentChannel.equals(botChannel))
+            return;
+
         if (event.getName().equals("hello"))
             event.reply("Welcome to the server " + event.getUser().getAsTag()).queue();
         if (event.getName().equals("joke")) {
