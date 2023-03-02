@@ -1,29 +1,35 @@
 package com.thore.bot;
 
 import com.thore.bot.listeners.CommandListener;
-import com.thore.bot.listeners.EventListener;
+import com.thore.bot.listeners.EventManager;
 import com.thore.bot.listeners.VoiceListener;
 import io.github.cdimascio.dotenv.Dotenv;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
-import net.dv8tion.jda.api.sharding.ShardManager;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
-public class Bot {
-    public final static Dotenv CONFIG = Dotenv.configure().load();
-    public final static DefaultShardManagerBuilder BUILDER = DefaultShardManagerBuilder.createDefault(CONFIG.get("TOKEN"));
-    public final static ShardManager SHARD_MANAGER = BUILDER.build();
 
-    private static void initializeBot() {
-        SHARD_MANAGER.addEventListener(new CommandListener(), new EventListener(), new VoiceListener());
-        BUILDER.setStatus(OnlineStatus.ONLINE)
-                .setMemberCachePolicy(MemberCachePolicy.ALL)
-                .setActivity(Activity.watching("I'M WATCHING YOU"))
-                .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES);
+public class Bot {
+    private static JDA JDA;
+
+    public static void main(String[] args) throws InterruptedException {
+        Dotenv config = Dotenv.configure().load();
+        JDABuilder builder = JDABuilder.createDefault(config.get("TOKEN"));
+        builder.setStatus(OnlineStatus.ONLINE);
+        builder.setMemberCachePolicy(MemberCachePolicy.ALL);
+        builder.setActivity(Activity.watching("Everything"));
+        builder.enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES, GatewayIntent.MESSAGE_CONTENT);
+        builder.addEventListeners(
+                new EventManager(),
+                new CommandListener(),
+                new VoiceListener());
+        JDA = builder.build();
+        JDA.awaitReady();
     }
 
-    public static void main(String[] args) {
-        initializeBot();
+    public static JDA getJDA() {
+        return JDA;
     }
 }
