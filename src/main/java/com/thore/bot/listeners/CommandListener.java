@@ -16,12 +16,13 @@ public class CommandListener extends ListenerAdapter {
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
         if (event.getName().equals("hello"))
             event.reply("Welcome to the server " + event.getUser().getAsTag()).queue();
-        if (event.getName().equals("joke"))
-            event.reply(TxtFileLoader.loadFile("src/main/java/com/thore/bot/io/files/jokes.txt")).queue();
-
+        if (event.getName().equals("joke")) {
+            String pathJokes = "src/main/java/com/thore/bot/io/files/jokes.txt";
+            event.reply(TxtFileLoader.loadFile(pathJokes)).queue();
+        }
         if (event.getName().equals("blackjack")) {
             event.reply("Blackjack is starting...").queue();
-            new BlackJackGame(2);
+            new BlackJackGame();
         }
     }
 
@@ -31,7 +32,6 @@ public class CommandListener extends ListenerAdapter {
         commandDataList.add(Commands.slash("hello", "greetings"));
         commandDataList.add(Commands.slash("joke", "something funny"));
         commandDataList.add(Commands.slash("blackjack", "card game"));
-
         event.getGuild().updateCommands().addCommands(commandDataList).queue();
     }
 }
