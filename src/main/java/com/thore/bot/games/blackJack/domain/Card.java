@@ -23,6 +23,6 @@ public class Card {
 
     @Override
     public String toString() {
-        return "Card = ["+card+"], Color = ["+color+"]";
+        return "Card = ["+card+"] <#> Color = ["+color+"]";
     }
 }

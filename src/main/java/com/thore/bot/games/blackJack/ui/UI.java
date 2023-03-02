@@ -1,8 +1,6 @@
 package com.thore.bot.games.blackJack.ui;
 
 import com.thore.bot.games.blackJack.blackJackGame.BlackJackGame;
-import com.thore.bot.games.blackJack.domain.CardDeck;
-import com.thore.bot.games.blackJack.domain.Hand;
 import com.thore.bot.games.blackJack.domain.Player;
 
 import java.util.ArrayList;
@@ -11,10 +9,8 @@ import java.util.Scanner;
 public class UI {
     private final static Scanner SCANNER = new Scanner(System.in);
     private final static ArrayList<Player> PLAYERS = new ArrayList<>();
-    private static CardDeck CARD_DECK;
 
-    public UI(CardDeck cardDeck, int numberOfPlayers) {
-        CARD_DECK = cardDeck;
+    public UI(int numberOfPlayers) {
         initializePlayers(numberOfPlayers);
         revealCards();
     }
@@ -29,7 +25,6 @@ public class UI {
             System.out.println("Username Player " + (PLAYERS.size()+1));
             System.out.print(" > ");
             String username = SCANNER.nextLine();
-            Hand hand = BlackJackGame.createHand();
             Player player = BlackJackGame.createPlayer(username);
             PLAYERS.add(player);
         }
