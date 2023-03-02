@@ -8,8 +8,8 @@ public class HandTest {
 
     @Test
     public void getValueTest() {
-        Hand hand = new Hand(new Card("Clubs", "Ace"), new Card("Spaded", "0"));
-        hand.getHand().add(new Card("Spades" , "Ace"));
-        assertTrue(12 == hand.getValue());
+        Hand hand = new Hand(new Card(Suit.CLUB, Rank.ACE), new Card(Suit.SPADE,Rank.ACE));
+        hand.getHand().add(new Card(Suit.CLUB , Rank.TEN));
+        assertTrue(12 == hand.calculateValue());
     }
 }

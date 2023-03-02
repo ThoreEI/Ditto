@@ -1,28 +1,28 @@
 package com.thore.bot.games.blackJack.domain;
 
 public class Card {
-    private final String color;
-    private final String card;
+    private final Suit suit;
+    private final Rank rank;
 
-    public Card(String color, String card) {
-        this.color = color;
-        this.card = card;
+    public Card(Suit suit, Rank rank){
+        this.suit = suit;
+        this.rank = rank;
+    }
+
+    public Suit getSuit() {
+        return suit;
+    }
+
+    public Rank getRank() {
+        return rank;
     }
 
     public int getValue() {
-        return switch (card) {
-            case "Jack", "Queen", "King" -> 10;
-            case "Ace" -> 11;
-            default -> Integer.parseInt(card);
-        };
-    }
-
-    public String getCard() {
-        return card;
+        return rank.rankValue;
     }
 
     @Override
     public String toString() {
-        return "Card = ["+card+"] <#> Color = ["+color+"]";
+        return ("["+rank+" of "+ suit + "] ("+this.getValue()+")");
     }
 }

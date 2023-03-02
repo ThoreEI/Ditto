@@ -15,14 +15,13 @@ public enum Rank {
     KING("King", 10),
     ACE("Ace", 11);
 
-    private String rankName;
-    private int rankValue;
+    String rankName;
+    int rankValue;
 
     Rank(String rankName, int rankValue) {
         this.rankName=rankName;
         this.rankValue=rankValue;
     }
-
 
     @Override
     public String toString() {

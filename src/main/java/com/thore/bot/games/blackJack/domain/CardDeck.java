@@ -1,24 +1,36 @@
 package com.thore.bot.games.blackJack.domain;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class CardDeck {
-    private final static ArrayList<Card> CARD_DECK = new ArrayList<>();
+    private static ArrayList<Card> cardDeck = new ArrayList<>();
 
     public CardDeck() {
-        for (String color : new String[]{"Clubs","Spades","Hearts","Diamonds"}) {
-            for (int number=2; number<=10; number++)
-                CARD_DECK.add(new Card(color, number+""));
-            for (String card : new String[] {"Jack", "Queen", "King", "Ace"})
-                CARD_DECK.add(new Card(color, card));
+        for (Suit suit : Suit.values())
+            for (Rank rank : Rank.values())
+                cardDeck.add(new Card(suit, rank));
+        shuffle();
+    }
+
+    //  Collections.shuffle(cardDeck, new Random());
+    public void shuffle() {
+        ArrayList<Card> shuffledDeck = new ArrayList<>();
+        while (cardDeck.size() > 0) {
+            int indexCardToPull = (int) (Math.random()*cardDeck.size()-1);
+            shuffledDeck.add(cardDeck.remove(indexCardToPull));
         }
-        Collections.shuffle(CARD_DECK);
+       cardDeck = shuffledDeck;
     }
 
     public static Card getCard() {
-        if (CARD_DECK.isEmpty())
-            throw new RuntimeException();
-        return CARD_DECK.remove(0);
+        return cardDeck.remove(0);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder output = new StringBuilder();
+        for (Card card: cardDeck)
+            output.append(card).append("\n");
+        return output.toString();
     }
 }

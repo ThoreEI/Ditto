@@ -9,6 +9,10 @@ public abstract class Person {
         this.hand=hand;
     }
 
+    public boolean hasBlackJack() {
+        return this.getHand().calculateValue() == 21;
+    }
+
     @Override
     public String toString() {
         return "Person{" + "name='" + username + '\'' + "; hand=" + hand + '}';

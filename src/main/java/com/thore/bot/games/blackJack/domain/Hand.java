@@ -9,17 +9,19 @@ public class Hand {
         HAND.add(card2);
     }
 
-    public int getValue() {
+    public int calculateValue() {
         int value = 0;
-        for (Card card : HAND)
+        int aceCount = 0;
+        for (Card card : HAND) {
             value += card.getValue();
-        while (value > 21 && HAND.toString().contains("Ace"))
+            if (card.getValue() == 11)
+                aceCount++;
+        }
+        while (value > 21 && aceCount > 0) {
+            aceCount--;
             value -= 10;
+        }
         return value;
-    }
-
-    public boolean isBlackJack() {
-        return getValue() == 21;
     }
 
     public ArrayList<Card> getHand() {
