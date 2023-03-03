@@ -1,6 +1,7 @@
 package com.thore.bot.listeners;
 
 import com.thore.bot.Bot;
+import com.thore.bot.games.blackJack.blackJackGame.BlackJackGame;
 import com.thore.bot.io.loader.TxtFileLoader;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -27,7 +28,7 @@ public class CommandListener extends ListenerAdapter {
         }
         if (event.getName().equals("blackjack")) {
             event.reply("Blackjack is starting...").queue();
-            new BlackJack();
+            new BlackJackGame();
         }
     }
 

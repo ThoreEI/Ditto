@@ -6,8 +6,6 @@ public enum Suit {
     HEART("Hearts"),
     SPADE("Spades");
 
-
-    private final static Suit[] SUITS = new Suit []{Suit.CLUB,Suit.SPADE,Suit.HEART,Suit.DIAMOND};
     private final String suitName;
 
     Suit (String suitName) {

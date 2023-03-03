@@ -17,15 +17,23 @@ public class Hand {
             if (card.getValue() == 11)
                 aceCount++;
         }
-        while (value > 21 && aceCount > 0) {
+        while (aceCount > 0 && value > 21) {
             aceCount--;
             value -= 10;
         }
         return value;
     }
 
-    public ArrayList<Card> getHand() {
-        return HAND;
+    public void shuffleHandCardsIntoDeck(Deck receivingDeck) {
+        receivingDeck.addCards(HAND);
+    }
+
+    public Card getCard(int index) {
+        return HAND.get(index);
+    }
+
+    public void drawCardFromDeck(Deck deck) {
+        HAND.add(deck.getCard());
     }
 
     @Override
@@ -35,7 +43,4 @@ public class Hand {
             stringBuilder.append(card.toString()).append("\n");
         return stringBuilder.toString();
     }
-
-
-
 }

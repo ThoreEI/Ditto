@@ -1,5 +1,6 @@
 package com.thore.bot;
 
+import com.thore.bot.games.blackJack.blackJackGame.BlackJackGame;
 import com.thore.bot.listeners.CommandListener;
 import com.thore.bot.listeners.EventManager;
 import io.github.cdimascio.dotenv.Dotenv;
@@ -24,6 +25,7 @@ public class Bot {
         builder.addEventListeners(new EventManager(), new CommandListener());
         JDA = builder.build();
         JDA.awaitReady();
+        new BlackJackGame();
     }
 
     public static JDA getJDA() {
