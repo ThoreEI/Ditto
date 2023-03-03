@@ -18,10 +18,10 @@ public class UI {
             System.out.println(player.getName() + " # " + player.getHand().toString() + "\n");
     }
 
+    // TODO regex
     public static String inputUsername() {
         System.out.println("Enter a username.\n > ");
         String username = SCANNER.nextLine();
-        // TODO regex
         return username.length() > 0 ? username : "Nameless";
     }
 
