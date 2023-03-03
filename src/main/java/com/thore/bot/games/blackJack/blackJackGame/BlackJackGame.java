@@ -1,6 +1,10 @@
 package com.thore.bot.games.blackJack.blackJackGame;
-import com.thore.bot.games.blackJack.domain.*;
-import com.thore.bot.games.blackJack.ui.*;
+import com.thore.bot.games.blackJack.domain.Dealer;
+import com.thore.bot.games.blackJack.domain.Deck;
+import com.thore.bot.games.blackJack.domain.Hand;
+import com.thore.bot.games.blackJack.domain.Player;
+import com.thore.bot.games.blackJack.ui.UI;
+
 import java.util.ArrayList;
 
 public class BlackJackGame {
