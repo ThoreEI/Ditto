@@ -1,2 +1,2 @@
 # JDA-BOT
-A JDA based Discord-Bot to manage Server-Tasks.
+Ein Discord Bot basierend auf Java, der Teile des Managements für einen Server übernimmt.
