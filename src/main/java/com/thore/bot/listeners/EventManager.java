@@ -1,6 +1,5 @@
 package com.thore.bot.listeners;
 
-import com.thore.bot.io.output.Messenger;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.GenericEvent;
@@ -31,20 +30,20 @@ public class EventManager implements EventListener {
         String emoji = event.getReaction().getEmoji().getAsReactionCode();
         MessageChannel channel = event.getChannel();
         String message = "Reaction from " + user + ": " + emoji;
-        Messenger.sendMessage(channel, message);
+        channel.sendMessage(message).queue();
     }
 
     private void onMessageReceived(MessageReceivedEvent event) {
 //        if (event.getAuthor().isBot() || !event.getChannel().getId().equals(BOT_SPAM_ID))
 //            return;
+        MessageChannel channel = event.getChannel(); // TODO: in bot spam channel
         Message message = event.getMessage();
         String content = message.getContentRaw();
-        MessageChannel channel = event.getChannel(); // TODO: in bot spam channel
         if (content.equals("!card"))
-            Messenger.sendMessage(channel, content);
+            channel.sendMessage(content).queue();
     }
 
     private static void onGuildMemberJoin(GuildMemberJoinEvent event) {
-       System.out.println("Welcome to the server " + event.getUser().getAsTag());
+        System.out.println("Welcome to the server " + event.getUser().getAsTag());
     }
 }
