@@ -20,16 +20,17 @@ public class UI {
 
     // TODO regex
     public static String inputUsername() {
-        System.out.println("Enter a username.\n > ");
-        String username = SCANNER.nextLine();
-        return username.length() > 0 ? username : "Nameless";
+        System.out.println("Enter a username.");
+        String name = SCANNER.nextLine();
+        return name.length() > 0 ? name : "Max Mustermann";
     }
 
     public static int inputNumberOfPlayers() {
-        System.out.println("Number of players.");
-        System.out.println(" > ");
-        int input = Integer.parseInt(SCANNER.nextLine());
-        return 1 <= input && input <= 4 ? input : 4;
+//        System.out.println("Number of players.");
+//        System.out.println(" > ");
+//        int input = Integer.parseInt(SCANNER.nextLine());
+//        return 1 <= input && input <= 4 ? input : 4;
+        return 4; // TODO
     }
 
     public static boolean makeDecision () {
