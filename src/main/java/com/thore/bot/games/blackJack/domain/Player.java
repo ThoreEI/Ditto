@@ -6,14 +6,8 @@ import com.thore.bot.games.blackJack.ui.UI;
 public class Player extends Person {
     private int money;
 
-    public Player(String username, Hand hand) {
-        super(username, hand);
-        new Player(username, hand, 100);
-    }
-
-    public Player(String username, Hand hand, int money) {
-        super(username, hand); //  TODO Ask using money
-        this.money += money;
+    public Player(String name)  {
+        super(name);
     }
 
     public void makeDecision(Deck deck, Deck discard) {

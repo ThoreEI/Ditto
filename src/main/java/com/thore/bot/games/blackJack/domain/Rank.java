@@ -23,7 +23,6 @@ public enum Rank {
         this.rankValue=rankValue;
     }
 
-    @Override
     public String toString() {
         return rankName;
     }

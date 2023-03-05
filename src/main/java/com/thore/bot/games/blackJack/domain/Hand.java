@@ -2,44 +2,48 @@ package com.thore.bot.games.blackJack.domain;
 import java.util.ArrayList;
 
 public class Hand {
-    private final static ArrayList<Card> HAND = new ArrayList<>();
+    private ArrayList<Card> hand;
 
-    public Hand(Card card1, Card card2 ) {
-        HAND.add(card1);
-        HAND.add(card2);
+    public Hand() {
+        hand = new ArrayList<>();
+    }
+
+    public void drawCardFromDeck(Deck deck) {
+        hand.add(deck.getCard());
+    }
+
+    public void shuffleHandIntoDeck(Deck discardDeck) {
+        discardDeck.addCards(hand);
+        hand.clear();
     }
 
     public int calculateValue() {
         int value = 0;
-        int aceCount = 0;
-        for (Card card : HAND) {
+        int numberOfAces = 0;
+        for (Card card : hand) {
             value += card.getValue();
             if (card.getValue() == 11)
-                aceCount++;
+                numberOfAces++;
         }
-        while (aceCount > 0 && value > 21) {
-            aceCount--;
+        while (numberOfAces > 0 && value > 21) {
+            numberOfAces--;
             value -= 10;
         }
         return value;
     }
 
-    public void shuffleHandCardsIntoDeck(Deck receivingDeck) {
-        receivingDeck.addCards(HAND);
+    public int getNumberOfRemainingCards() {
+        return this.hand.size();
     }
 
     public Card getCard(int index) {
-        return HAND.get(index);
-    }
-
-    public void drawCardFromDeck(Deck deck) {
-        HAND.add(deck.getCard());
+        return hand.get(index);
     }
 
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        for (Card card : HAND)
+        for (Card card : hand)
             stringBuilder.append(card.toString()).append("\n");
         return stringBuilder.toString();
     }
