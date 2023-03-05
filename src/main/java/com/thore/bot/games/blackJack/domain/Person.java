@@ -1,13 +1,16 @@
 package com.thore.bot.games.blackJack.domain;
 
-public abstract class Person {
-    private final String name;
-    private Hand hand;
-    private int wins, looses, pushes;
+import com.thore.bot.games.blackJack.blackJackGame.BlackJackGame;
 
-    public Person(String username, Hand hand) {
-        this.name =username;
-        this.hand=hand;
+import javax.swing.*;
+import java.awt.*;
+
+public abstract class Person {
+    private String name;
+    private Hand hand;
+
+    public Person(String name) {
+        this.name= name;  // TODO check
     }
 
     public void hit(Deck cardDeck, Deck discardDeck) {
@@ -16,33 +19,44 @@ public abstract class Person {
         this.hand.drawCardFromDeck(cardDeck);
     }
 
+    public void printHand(JLabel[] imagesOfCards) {
+        System.out.println(this.name + "'s hand:");
+        System.out.println(this.hand + " Value: " + this.hand.calculateValue());
+
+        for(int i = 0; i < 11; i++)
+            imagesOfCards[i].setVisible(false);
+
+        for(int number=0; number < hand.getNumberOfRemainingCards(); number++) {
+            String rank = this.hand.getCard(number).getRank().toString();
+            String suit = this.hand.getCard(number).getSuit().toString();
+            String filename = "_" + rank + "_" +  suit + ".png";
+
+            imagesOfCards[number].setIcon(
+                    new ImageIcon(
+                            new ImageIcon(BlackJackGame.PATH_IMAGES+filename)
+                                    .getImage()
+                                    .getScaledInstance(
+                                            BlackJackGame.WIDTH_OF_CARD,
+                                            BlackJackGame.HEIGHT_OF_CARD,
+                                            Image.SCALE_DEFAULT
+                                    )
+                    )
+            );
+            imagesOfCards[number].setVisible(true);
+        }
+
+    }
 
     public boolean hasBlackJack() {
         return this.getHand().calculateValue() == 21;
-    }
-
-    @Override
-    public String toString() {
-        return "Person{" + "name='" + name + '\'' + "; hand=" + hand + '}';
     }
 
     public String getName() {
         return name;
     }
 
-    public Hand getHand() {
-        return hand;
+    public Hand getHand(){
+        return this.hand;
     }
 
-    public int getWins() {
-        return wins;
-    }
-
-    public int getLooses() {
-        return looses;
-    }
-
-    public int getPushes() {
-        return pushes;
-    }
 }
