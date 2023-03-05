@@ -11,8 +11,6 @@ import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 
-import javax.swing.*;
-
 public class Bot {
     private static JDA JDA;
     private static Dotenv CONFIG;
@@ -27,6 +25,8 @@ public class Bot {
         builder.addEventListeners(new EventManager(), new CommandListener());
         JDA = builder.build();
         JDA.awaitReady();
+
+        new BlackJackGame();
     }
 
     public static JDA getJDA() {

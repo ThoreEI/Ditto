@@ -20,7 +20,7 @@ public class Hand {
     public int calculateValue() {
         int value = 0;
         int numberOfAces = 0;
-        for (Card card : hand) {
+        for (Card card : this.hand) {
             value += card.getValue();
             if (card.getValue() == 11)
                 numberOfAces++;

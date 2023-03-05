@@ -8,10 +8,12 @@ import com.thore.bot.games.blackJack.ui.UI;
 import javax.swing.*;
 import java.util.ArrayList;
 
+import static com.thore.bot.games.blackJack.ui.UI.inputUsername;
+
 public class BlackJackGame extends JPanel {
     private static ArrayList<Player> PLAYERS = new ArrayList<>();
     private Deck cardDeck, discardedDeck;
-    private Person player, dealer;
+    private Dealer dealer;
     private int wins=0, looses=0, pushes=0;
 
     public final static int WIDTH_OF_CARD = 100;
@@ -35,22 +37,21 @@ public class BlackJackGame extends JPanel {
         cardDeck.shuffle();
     }
 
-    private void createPlayers(/*int numberOfPlayers*/) {
-        //   for (int player=0; player<numberOfPlayers; player++) {
-        Player player = createPlayer(UI.inputUsername());
-        PLAYERS.add(player);
-        dealer = new Dealer();
-    }
-
     private void setupGUI() {
         JFrame frame = new JFrame("Ditto's BlackJack");
         frame.setSize(1600, 900);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        BlackJackGame blackJackGame = new BlackJackGame();
-        frame.add(blackJackGame);
+        frame.add(this);
         frame.setVisible(true);
     }
 
+    private void createPlayers(/*int numberOfPlayers*/) {
+        //   for (int player=0; player<numberOfPlayers; player++) {
+        String username = inputUsername();
+        Player player = new Player(username);
+        PLAYERS.add(player);
+        dealer = new Dealer();
+    }
 
     private void startRound() {
         if (wins > 0 || looses > 0 || pushes > 0) {
@@ -65,9 +66,6 @@ public class BlackJackGame extends JPanel {
             System.out.println(player.getName() + " # " + player.getHand().toString()+"\n");
     }
 
-    public  Player createPlayer(String username) {
-        return new Player(username);
-    }
 
     public String getStatistics() {
         return "wins=" + wins + "\n" + "looses=" + looses + "\npushes=" + pushes;
