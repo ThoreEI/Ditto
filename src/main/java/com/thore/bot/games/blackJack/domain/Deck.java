@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class Deck {
 
-    private static ArrayList<Card> deck;
+    private ArrayList<Card> deck;
 
     public Deck() {
         deck = new ArrayList<>();
@@ -16,7 +16,11 @@ public class Deck {
         shuffle();
     }
 
-    // public Deck(Deck otherDeck){ Collections.copy(deck, otherDeck.getDeck()); }
+    public Deck(Deck toCopy) {
+        deck = new ArrayList<>(); // TODO
+        Collections.copy(deck, toCopy.getDeck());
+    }
+
     public void shuffle() {
         Collections.shuffle(deck, new Random());
     }
@@ -26,9 +30,13 @@ public class Deck {
     }
 
     public void refillCardsFromDiscardDeck(Deck discardDeck) {
-        addCards(discardDeck.getDeck());
-        discardDeck.getDeck().clear();
+        this.addCards(discardDeck.getDeck());
         this.shuffle();
+        discardDeck.emptyDeck();
+    }
+
+    private void emptyDeck() {
+        this.getDeck().clear();
     }
 
     public ArrayList<Card> getDeck() {
@@ -40,7 +48,7 @@ public class Deck {
     }
 
     public boolean isEmpty() {
-        return deck.size() == 0;
+        return deck.size()==0;
     }
 
     @Override
