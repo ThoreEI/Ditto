@@ -1,21 +1,29 @@
 package com.thore.bot.games.blackJack.domain;
 
-
-import com.thore.bot.games.blackJack.ui.UI;
-
 public class Player extends Person {
+    private int wins=0;
+    private int looses=0;
+    private int pushes=0;
     private int money;
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "wins=" + wins +
+                ", looses=" + looses +
+                ", pushes=" + pushes +
+                ", money=" + money +
+                '}';
+    }
 
     public Player(String name)  {
         super(name);
+        new Player(this.getName(), 0);
     }
 
-    public void makeDecision(Deck deck, Deck discard) {
-        boolean hasDecidedToHit = UI.makeDecision();
-        if (hasDecidedToHit)
-            this.hit(deck, discard);
-        if (this.getHand().calculateValue() < 21)
-                     this.makeDecision(deck, discard);
+    public Player(String name, int money)  {
+        super(name);
+        this.money = money;
     }
 
     public int getMoney() {

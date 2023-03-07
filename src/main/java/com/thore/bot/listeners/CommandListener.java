@@ -1,8 +1,7 @@
 package com.thore.bot.listeners;
-
 import com.thore.bot.Bot;
 import com.thore.bot.games.blackJack.blackJackGame.BlackJackGame;
-import com.thore.bot.io.loader.TxtFileLoader;
+import com.thore.bot.io.reader.FileReader;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -13,31 +12,26 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 public class CommandListener extends ListenerAdapter {
-    @Override
-    public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
-        String currentChannel = event.getChannel().getId();
-        String botChannel = Bot.getConfig().get("BOT_CHANNEL");
-        if (!currentChannel.equals(botChannel))
-            return;
-
-        if (event.getName().equals("hello"))
-            event.reply("Welcome to the server " + event.getUser().getAsTag()).queue();
-        if (event.getName().equals("joke")) {
-            String pathJokes = "src/main/java/com/thore/bot/io/files/jokes.txt";
-            event.reply(TxtFileLoader.loadFile(pathJokes)).queue();
-        }
-        if (event.getName().equals("blackjack")) {
-            event.reply("Blackjack is starting...").queue();
-            new BlackJackGame();
-        }
-    }
+    public final static  String BOT_CHANNEL_ID = Bot.getConfig().get("BOT_CHANNEL");
 
     @Override
     public void onGuildReady(@NotNull GuildReadyEvent event) {
         ArrayList <CommandData> commandDataList = new ArrayList<>();
-        commandDataList.add(Commands.slash("hello", "greetings"));
-        commandDataList.add(Commands.slash("joke", "something funny"));
-        commandDataList.add(Commands.slash("blackjack", "card game"));
+        commandDataList.add(Commands.slash("joke", "Witz gefällig?"));
+        commandDataList.add(Commands.slash("blackjack", "BlackJack-Spiel."));
         event.getGuild().updateCommands().addCommands(commandDataList).queue();
+    }
+
+    @Override
+    public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
+      if (BOT_CHANNEL_ID.equals(event.getChannel().getId()))
+            return;
+        if (event.getName().equals("joke")) {
+            event.reply(FileReader.loadJoke()).queue();
+        } else if (event.getName().equals("blackjack")) {
+            event.reply("Blackjack is starting...").queue();
+            // TODO Spieleranzahl, Einsatz
+            new BlackJackGame();
+        }
     }
 }

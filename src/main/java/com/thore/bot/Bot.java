@@ -20,12 +20,11 @@ public class Bot {
         JDABuilder builder = JDABuilder.createDefault(CONFIG.get("TOKEN"));
         builder.setStatus(OnlineStatus.ONLINE);
         builder.setMemberCachePolicy(MemberCachePolicy.ALL);
-        builder.setActivity(Activity.watching("Everything"));
+        builder.setActivity(Activity.watching("Evolving"));
         builder.enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES, GatewayIntent.MESSAGE_CONTENT);
         builder.addEventListeners(new EventManager(), new CommandListener());
         JDA = builder.build();
         JDA.awaitReady();
-
         new BlackJackGame();
     }
 

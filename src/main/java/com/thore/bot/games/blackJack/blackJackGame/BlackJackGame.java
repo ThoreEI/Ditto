@@ -1,74 +1,69 @@
 package com.thore.bot.games.blackJack.blackJackGame;
-import com.thore.bot.games.blackJack.domain.Dealer;
-import com.thore.bot.games.blackJack.domain.Deck;
-import com.thore.bot.games.blackJack.domain.Person;
-import com.thore.bot.games.blackJack.domain.Player;
-import com.thore.bot.games.blackJack.ui.UI;
+import com.thore.bot.Bot;
+import com.thore.bot.games.blackJack.domain.*;
+import com.thore.bot.io.reader.FileReader;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
 import javax.swing.*;
+import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
 
-import static com.thore.bot.games.blackJack.ui.UI.inputUsername;
-
 public class BlackJackGame extends JPanel {
-    private static ArrayList<Player> PLAYERS = new ArrayList<>();
-    private Deck cardDeck, discardedDeck;
-    private Dealer dealer;
-    private int wins=0, looses=0, pushes=0;
-
-    public final static int WIDTH_OF_CARD = 100;
-    public final static int HEIGHT_OF_CARD = 155;
-    public final static String PATH_IMAGES = "com/thore/bot/images/cards/";
-
-    JButton btnHit, btnStand, btnNext;
-    JLabel[] labelDealerCards, labelPlayerCards;
-    JLabel labelScore, labelPlayerHandVal, labelDealerHandVal, labelGameMessage;
+    private static Deck playingDeck;
+    private static Deck discardedDeck;
+    private static ArrayList<Player> players;
+    private static Dealer dealer;
+    private static int lapCounter;
 
     public BlackJackGame() {
-        setupGUI();
+        lapCounter=0;
         buildDecks();
-        createPlayers();
+        players = new ArrayList<>();
+        players.add(new Player("Thore")); // TODO Mehrspieler
         startRound();
     }
 
     private void buildDecks() {
-        cardDeck = new Deck();
+        playingDeck = new Deck();
         discardedDeck = new Deck();
-        cardDeck.shuffle();
-    }
-
-    private void setupGUI() {
-        JFrame frame = new JFrame("Ditto's BlackJack");
-        frame.setSize(1600, 900);
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.add(this);
-        frame.setVisible(true);
-    }
-
-    private void createPlayers(/*int numberOfPlayers*/) {
-        //   for (int player=0; player<numberOfPlayers; player++) {
-        String username = inputUsername();
-        Player player = new Player(username);
-        PLAYERS.add(player);
-        dealer = new Dealer();
+        playingDeck.shuffle();
     }
 
     private void startRound() {
-        if (wins > 0 || looses > 0 || pushes > 0) {
-            System.out.println("Statistics: " + getStatistics());
-            System.out.println(" Round starts!");
+        // TODO condition für while true
+        while (lapCounter < 10) {
+            if (lapCounter == 0)
+                System.out.println("Willkommen");
+            System.out.println("Die " + (lapCounter + 1) + " Runde beginnt");
+            renderCards();
+            lapCounter++;
         }
-        // TODO
+        players.get(0).getHand().drawCardFromDeck(playingDeck); // TODO für Mehrspieler konzipieren
     }
 
-    private void revealCards() {
-        for (Player player: PLAYERS)
-            System.out.println(player.getName() + " # " + player.getHand().toString()+"\n");
+    public void renderCards() {
+        for (Player player : players) {
+            String name = player.getName();
+            Hand hand = player.getHand();
+            int value = hand.calculateValue();
+            System.out.println(name + " Hand:" + hand + "Value: " + value);
+            for (int position = 0; position < hand.getNumberOfCards(); position++) {
+                String rank = hand.getCard(position).getRank().toString();
+                String suit = hand.getCard(position).getSuit().toString();
+                String filename = rank + suit + ".png";
+                System.out.println(filename);
+                try {
+                  Image image = FileReader.loadCard(filename);
+                    // TODO in Chat posten
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
     }
 
-
-    public String getStatistics() {
-        return "wins=" + wins + "\n" + "looses=" + looses + "\npushes=" + pushes;
+    public ArrayList<Player> getPlayers(){
+        return players;
     }
-
 }

@@ -5,8 +5,7 @@ import java.util.Collections;
 import java.util.Random;
 
 public class Deck {
-
-    private ArrayList<Card> deck;
+    private static ArrayList<Card> deck;
 
     public Deck() {
         deck = new ArrayList<>();
@@ -16,39 +15,40 @@ public class Deck {
         shuffle();
     }
 
-    public Deck(Deck toCopy) {
-        deck = new ArrayList<>(); // TODO
-        Collections.copy(deck, toCopy.getDeck());
+    public Deck(Deck other) {
+        Collections.copy(this.getDeck(), other.getDeck());  // TODO   benötigt?
     }
 
     public void shuffle() {
         Collections.shuffle(deck, new Random());
     }
 
+    private void emptyDeck() {
+        getDeck().clear();
+    }
+
+    public void replenishWithCards(Deck discardedDeck) {
+        this.addCards(discardedDeck.getDeck());
+        this.shuffle();
+        discardedDeck.emptyDeck();
+    }
+
     public void addCards(ArrayList<Card> cards) {
         deck.addAll(cards);
     }
 
-    public void refillCardsFromDiscardDeck(Deck discardDeck) {
-        this.addCards(discardDeck.getDeck());
-        this.shuffle();
-        discardDeck.emptyDeck();
-    }
-
-    private void emptyDeck() {
-        this.getDeck().clear();
-    }
-
-    public ArrayList<Card> getDeck() {
-        return deck;
-    }
-
     public Card getCard() {
-        return deck.remove(0);
+        if (isEmpty()) // TODO verhindern
+            throw new IndexOutOfBoundsException("Der Kartenstapel ist leer");
+        return getDeck().remove(0);
     }
 
     public boolean isEmpty() {
         return deck.size()==0;
+    }
+
+    public ArrayList<Card> getDeck() {
+        return deck;
     }
 
     @Override

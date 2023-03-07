@@ -8,12 +8,16 @@ public class Hand {
         hand = new ArrayList<>();
     }
 
+    public Card getCard(int index) {
+        return hand.get(index);
+    }
+
     public void drawCardFromDeck(Deck deck) {
         hand.add(deck.getCard());
     }
 
-    public void shuffleHandIntoDeck(Deck discardDeck) {
-        discardDeck.addCards(hand);
+    public void shuffleHandIntoDeck(Deck deck) {
+        deck.addCards(hand);
         hand.clear();
     }
 
@@ -32,12 +36,8 @@ public class Hand {
         return value;
     }
 
-    public int getNumberOfRemainingCards() {
-        return this.hand.size();
-    }
-
-    public Card getCard(int index) {
-        return hand.get(index);
+    public int getNumberOfCards() {
+        return hand.size();
     }
 
     @Override
