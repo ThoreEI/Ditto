@@ -12,7 +12,7 @@ public abstract class Person {
     public void hit(Deck cardDeck, Deck discardedDeck) {
         if (cardDeck.isEmpty())
             cardDeck.replenishWithCards(discardedDeck);
-        this.hand.drawCardFromDeck(cardDeck);
+        this.hand.drawCard(cardDeck);
     }
 
 

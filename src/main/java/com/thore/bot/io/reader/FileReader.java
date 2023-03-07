@@ -1,9 +1,7 @@
 package com.thore.bot.io.reader;
 
-import com.thore.bot.io.messenger.ImageMessenger;
-
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -26,9 +24,8 @@ public class FileReader {
         return jokes[new Random().nextInt(jokes.length)];
     }
 
-    public static Image loadCard(String filename) throws IOException {
-        return ImageIO.read(new File(CARDS_PNG+filename));
-
+    public static BufferedImage loadCard(String filename) throws IOException {
+       return ImageIO.read(new File(CARDS_PNG + filename));
     }
 }
 

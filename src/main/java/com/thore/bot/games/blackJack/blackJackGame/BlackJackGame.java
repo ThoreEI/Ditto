@@ -1,11 +1,10 @@
 package com.thore.bot.games.blackJack.blackJackGame;
-import com.thore.bot.Bot;
 import com.thore.bot.games.blackJack.domain.*;
+import com.thore.bot.io.messenger.ImageMessenger;
 import com.thore.bot.io.reader.FileReader;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
 import javax.swing.*;
-import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -17,12 +16,12 @@ public class BlackJackGame extends JPanel {
     private static int lapCounter;
 
     public BlackJackGame() {
-        lapCounter=0;
         buildDecks();
-        players = new ArrayList<>();
-        players.add(new Player("Thore")); // TODO Mehrspieler
+        createUsers();
         startRound();
     }
+
+
 
     private void buildDecks() {
         playingDeck = new Deck();
@@ -30,16 +29,31 @@ public class BlackJackGame extends JPanel {
         playingDeck.shuffle();
     }
 
+    private void createUsers() {
+        players = new ArrayList<>();
+        players.add(new Player("Thore"));
+        dealer = new Dealer();
+    }
+
     private void startRound() {
-        // TODO condition für while true
-        while (lapCounter < 10) {
+        lapCounter = 0;
+        while (true) {
             if (lapCounter == 0)
                 System.out.println("Willkommen");
             System.out.println("Die " + (lapCounter + 1) + " Runde beginnt");
+            dealCards();
             renderCards();
             lapCounter++;
         }
-        players.get(0).getHand().drawCardFromDeck(playingDeck); // TODO für Mehrspieler konzipieren
+    }
+
+    private void dealCards() {
+        for (Player currentPlayer : players) {
+            currentPlayer.getHand().drawCard(playingDeck);
+            currentPlayer.getHand().drawCard(playingDeck);
+        }
+        dealer.getHand().drawCard(playingDeck);
+        dealer.getHand().drawCard(playingDeck);
     }
 
     public void renderCards() {
@@ -47,23 +61,17 @@ public class BlackJackGame extends JPanel {
             String name = player.getName();
             Hand hand = player.getHand();
             int value = hand.calculateValue();
-            System.out.println(name + " Hand:" + hand + "Value: " + value);
+            // System.out.println(name + " Hand:" + hand + "Value: " + value);
             for (int position = 0; position < hand.getNumberOfCards(); position++) {
                 String rank = hand.getCard(position).getRank().toString();
                 String suit = hand.getCard(position).getSuit().toString();
                 String filename = rank + suit + ".png";
-                System.out.println(filename);
                 try {
-                  Image image = FileReader.loadCard(filename);
-                    // TODO in Chat posten
+                    ImageMessenger.sendPngToTextChannel(filename);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
         }
-    }
-
-    public ArrayList<Player> getPlayers(){
-        return players;
     }
 }

@@ -12,7 +12,7 @@ public class Hand {
         return hand.get(index);
     }
 
-    public void drawCardFromDeck(Deck deck) {
+    public void drawCard(Deck deck) {
         hand.add(deck.getCard());
     }
 
