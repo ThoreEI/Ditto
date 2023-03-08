@@ -1,10 +1,11 @@
 package com.thore.bot.games.blackJack.domain;
 
 public class Player extends Person {
+    public Hand secondHand;
     private int wins=0;
     private int looses=0;
     private int pushes=0;
-    private int money;
+    public int money;
 
     @Override
     public String toString() {
@@ -23,10 +24,11 @@ public class Player extends Person {
 
     public Player(String name, int money)  {
         super(name);
+        this.secondHand = null; // TODO solution without null
         this.money = money;
     }
 
-    public int getMoney() {
-        return money;
+    public boolean hasSecondHand() {
+        return secondHand != null;
     }
 }
