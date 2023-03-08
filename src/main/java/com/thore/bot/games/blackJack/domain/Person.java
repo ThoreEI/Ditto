@@ -2,7 +2,7 @@ package com.thore.bot.games.blackJack.domain;
 
 public abstract class Person {
     private final String name;
-    private Hand hand;
+    public Hand hand;
 
     public Person(String name) {  // TODO name von discord
         this.name= name;
@@ -17,14 +17,11 @@ public abstract class Person {
 
 
     public boolean hasBlackJack() {
-        return this.getHand().calculateValue() == 21;
+        return this.hand.calculatePoints() == 21;
     }
 
     public String getName() {
         return name;
     }
-
-    public Hand getHand(){
-        return this.hand;
-    }
+    
 }
