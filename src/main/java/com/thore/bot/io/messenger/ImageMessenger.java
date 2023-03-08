@@ -14,7 +14,7 @@ public class ImageMessenger  {
 
     public static void sendPngToTextChannel(String pngFilePath) throws IOException {
         File pngFile = new File(pngFilePath);
-        if (!pngFile.exists() || pngFile.isDirectory()) // TODO Debugging
+        if (!pngFile.exists()) // TODO Debugging
             throw new FileNotFoundException("PNG file not found.");
         //InputStream pngStream = new FileInputStream(pngFile);
         byte[] pngData = Files.readAllBytes(pngFile.toPath());

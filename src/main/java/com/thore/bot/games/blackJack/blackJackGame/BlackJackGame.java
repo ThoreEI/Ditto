@@ -42,69 +42,53 @@ public class BlackJackGame extends JPanel {
             if (lapCounter == 0)
                 System.out.println("Willkommen");
             System.out.println("Die " + (lapCounter + 1) + " Runde beginnt.");
-            placeBets();
+            for (Player currentPlayer : players)
+                placeBets(currentPlayer);
             dealOutStarterHands();
-            renderCards();
-            if(isBlackJack())
-                continue;
-            if (isBust())
-                System.out.println("Noch " + players.size() + " Spieler übrig.");
-            makeDecision();
+            // renderCards();
+            for (Player currentPlayer : players)
+                if (currentPlayer.hasBlackJack())
+                    System.out.println(currentPlayer.getName() + " hat ein BlackJack!");
+            for (Player currentPlayer : players)
+                if (currentPlayer.isBust()) {
+                    System.out.println("Noch " + players.size() + " Spieler übrig.");
+                    players.remove(currentPlayer);
+                }
+            for (Player currentPlayer : players)
+                makeDecision(currentPlayer);
             lapCounter++;
+
         }
-    }
-
-    // player/dealer has a total card value of 21
-    private boolean isBlackJack() {
-        for (Player currentPlayer : players)
-            if (currentPlayer.hasBlackJack()) {
-                System.out.println("BlackJack! " + currentPlayer.getName());
-                return true;
-            }
-        return false;
-    }
-
-    // a bust occurs when a player has more than 21 points
-    private boolean isBust() {
-        for (Player currentPlayer : players)
-            if (currentPlayer.hand.calculatePoints() > 21) {
-                System.out.println("Bust! " + currentPlayer.getName());
-                players.remove(currentPlayer); // TODO empty slot list
-                return true;
-            }
-        return false;
     }
 
     // TODO buttons
-    private void makeDecision() {
-        for (Player currentPlayer : players) {
-            System.out.println("1 --> Hit");
-            System.out.println("2 --> stand");
-            System.out.println("3 --> split");
-            System.out.println("4 --> double down");
-            int decision = SCANNER_IN.nextInt();
-            switch (decision) {
-                case 1 -> hit(currentPlayer);
-                case 2 -> stand(currentPlayer);
-                case 3 -> split(currentPlayer);
-                case 4 -> doubleDown(currentPlayer);
-            }
+    private void makeDecision(Player currentPlayer) {
+        System.out.println("1 --> Hit");
+        System.out.println("2 --> stand");
+        System.out.println("3 --> split");
+        System.out.println("4 --> double down");
+        int decision = SCANNER_IN.nextInt();
+        switch (decision) {
+            case 1 -> hit(currentPlayer);
+            case 2 -> stand(currentPlayer);
+            case 3 -> split(currentPlayer);
+            case 4 -> doubleDown(currentPlayer);
         }
     }
-
-
 
     // requesting another card
     private void hit(Player currentPlayer) {
         boolean playerWantsToHit = true;
-        while (!isBust() && playerWantsToHit) {
+        do {
+            System.out.println(currentPlayer.getName() + " erhält eine Karte.");
+            currentPlayer.hand.drawCard(playingDeck);
             System.out.println("1 -> Eine weitere Karte?");
-            System.out.println("2 -> " + "Keine weitere Karte?");
+            System.out.println("2 -> Keine weitere Karte?");
             if (SCANNER_IN.nextInt() == 2) // TODO check and channel
                 playerWantsToHit = false;
-            currentPlayer.hand.drawCard(playingDeck);
-        }
-        System.out.println(currentPlayer.getName() + " erhält eine weitere Karte.");
+
+        } while (!currentPlayer.isBust() && playerWantsToHit);
+
     }
 
     // don't ask for a card
@@ -132,16 +116,15 @@ public class BlackJackGame extends JPanel {
     }
 
     // TODO dc-channel
-    private void placeBets() {
-        for (Player currentPlayer : players) {
-            System.out.println("Einsatz zwischen 0 - 1000 Euro.");
-            System.out.println("Wie hoch ist der Einsatz?");
-            int betAmount  = Integer.parseInt(SCANNER_IN.nextLine());
-            if (currentPlayer.money >= betAmount && 0 < betAmount && betAmount < 1000)
-                currentPlayer.money = betAmount;
-            else
-                placeBets();
-        }
+    private void placeBets(Player currentPlayer) {
+        System.out.println("Einsatz zwischen 0 - 1000 Euro.");
+        System.out.println(currentPlayer.getName() + ": Wie hoch ist der Einsatz?");
+        int betAmount  = SCANNER_IN.nextInt();
+        if (currentPlayer.money >= betAmount && 0 <= betAmount && betAmount <= 1000)
+            currentPlayer.money = betAmount;
+        else
+            placeBets(currentPlayer);
+
     }
 
     private void dealOutStarterHands() {
@@ -170,12 +153,11 @@ public class BlackJackGame extends JPanel {
                 try {
                     ImageMessenger.sendPngToTextChannel(filename);
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    throw new RuntimeException("An error occurred while trying to send the png image.");
                 }
             }
         }
     }
-
 
 
 }

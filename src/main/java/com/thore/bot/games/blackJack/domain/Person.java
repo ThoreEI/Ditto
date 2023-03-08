@@ -15,7 +15,7 @@ public abstract class Person {
         this.hand.drawCard(cardDeck);
     }
 
-
+    // player/dealer has a total card value of 21
     public boolean hasBlackJack() {
         return this.hand.calculatePoints() == 21;
     }
