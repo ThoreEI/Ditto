@@ -8,12 +8,20 @@ public class Hand {
         hand = new ArrayList<>();
     }
 
+    public Hand(Card card1, Card card2) {
+        hand = new ArrayList<>();
+        hand.add(card1);
+        hand.add(card2);
+    }
+
     public Card getCard(int index) {
         return hand.get(index);
     }
 
-    public void drawCard(Deck deck) {
-        hand.add(deck.getCard());
+    public Card drawCard(Deck deck) {
+        Card newCard = deck.drawCard();
+        hand.add(newCard);
+        return newCard;
     }
 
     public void shuffleHandIntoDeck(Deck deck) {
@@ -21,7 +29,7 @@ public class Hand {
         hand.clear();
     }
 
-    public int calculateValue() {
+    public int calculatePoints() {
         int value = 0;
         int numberOfAces = 0;
         for (Card card : this.hand) {
@@ -34,6 +42,10 @@ public class Hand {
             value -= 10;
         }
         return value;
+    }
+
+    public boolean isPair() {
+        return hand.size() == 2 && getCard(0).getValue() == getCard(1).getValue();
     }
 
     public int getNumberOfCards() {
