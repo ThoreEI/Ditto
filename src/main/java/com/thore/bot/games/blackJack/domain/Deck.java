@@ -37,7 +37,7 @@ public class Deck {
         deck.addAll(cards);
     }
 
-    public Card getCard() {
+    public Card drawCard() {
         if (isEmpty()) // TODO verhindern
             throw new IndexOutOfBoundsException("Der Kartenstapel ist leer");
         return getDeck().remove(0);
