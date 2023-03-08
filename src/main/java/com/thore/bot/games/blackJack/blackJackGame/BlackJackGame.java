@@ -92,7 +92,6 @@ public class BlackJackGame extends JPanel {
             case 3 -> split(currentPlayer);
             case 4 -> doubleDown(currentPlayer);
             case 5 -> surrender(currentPlayer);
-
         }
     }
 
