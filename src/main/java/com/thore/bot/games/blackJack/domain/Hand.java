@@ -29,7 +29,7 @@ public class Hand {
         hand.clear();
     }
 
-    public int calculatePoints() {
+    public int calculateValue() {
         int value = 0;
         int numberOfAces = 0;
         for (Card card : this.hand) {

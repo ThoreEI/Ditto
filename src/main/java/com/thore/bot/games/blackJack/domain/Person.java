@@ -17,7 +17,12 @@ public abstract class Person {
 
     // player/dealer has a total card value of 21
     public boolean hasBlackJack() {
-        return this.hand.calculatePoints() == 21;
+        return this.hand.calculateValue() == 21;
+    }
+
+    // a bust occurs when a player has more than 21 points
+    public boolean isBust() {
+        return hand.calculateValue() > 21;
     }
 
     public String getName() {
