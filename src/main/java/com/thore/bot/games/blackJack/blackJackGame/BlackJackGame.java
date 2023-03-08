@@ -47,15 +47,6 @@ public class BlackJackGame extends JPanel {
         }
     }
 
-    private void checkForBusts() {
-        for (Player player : players)
-            if (player.isBust()) {
-                System.out.println(player.getName() + " hat sich überkauft und verliert.");
-                looses++;
-                player.betAmount = 0;
-            }
-    }
-
     private void checkForBlackJacks() {
         for (Player player : players) {
             if (!player.hasBlackJack() && !dealer.hasBlackJack())
@@ -65,21 +56,34 @@ public class BlackJackGame extends JPanel {
                 pushes++;
                 player.chips += player.betAmount;
                 player.betAmount = 0;
+                startRound();
             } else if (player.hasBlackJack()) {
                 System.out.println(player.getName() + " hat ein BlackJack! Gewinn: " + player.betAmount * 1.5);
                 wins++;
                 player.chips += player.betAmount * 1.5; // TODO round
                 player.betAmount = 0;
+                startRound();
             } else if (dealer.hasBlackJack()) {
                 System.out.println(dealer.getName() + " hat ein BlackJack!" + player.getName() + " hat verloren.");
                 looses++;
                 player.betAmount = 0;
+                startRound();
             }
         }
     }
+    private void checkForBusts() {
+        for (Player player : players)
+            if (player.isBust()) {
+                System.out.println(player.getName() + " hat sich überkauft und verliert.");
+                looses++;
+                player.betAmount = 0;
+                startRound();
+            }
+    }
+
 
     // TODO buttons
-    private void makeDecision(Player currentPlayer) {
+    private void makeDecision(Player player) {
         System.out.println("1 --> Hit");
         System.out.println("2 --> Stand");
         System.out.println("3 --> Split");
@@ -87,16 +91,12 @@ public class BlackJackGame extends JPanel {
         System.out.println("5 --> Surrender");
         int decision = SCANNER_IN.nextInt();
         switch (decision) {
-            case 1 -> hit(currentPlayer);
-            case 2 -> stand(currentPlayer);
-            case 3 -> split(currentPlayer);
-            case 4 -> doubleDown(currentPlayer);
-            case 5 -> surrender(currentPlayer);
+            case 1 -> hit(player);
+            case 2 -> stand(player);
+            case 3 -> split(player);
+            case 4 -> doubleDown(player);
+            case 5 -> surrender(player);
         }
-    }
-
-    private void surrender(Player currentPlayer) {
-        System.out.println(currentPlayer.getName() + " gibt auf. Die Hälfte des Einsatzes geht zurück.");
     }
 
     // requesting another card
@@ -135,6 +135,14 @@ public class BlackJackGame extends JPanel {
 
     private void doubleDown(Player currentPlayer) {
 
+    }
+
+    // player gives up and gets half of chips back
+    private void surrender(Player player) {
+        System.out.println(player.getName() + " gibt auf. Die Hälfte des Einsatzes geht zurück.");
+        looses++;
+        player.chips += player.betAmount/2;
+        player.betAmount=0;
     }
 
     // TODO dc-channel
