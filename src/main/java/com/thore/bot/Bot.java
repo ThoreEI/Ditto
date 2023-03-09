@@ -12,28 +12,32 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 
 public class Bot {
-    private static JDA JDA;
-    private static Dotenv CONFIG;
+    private static JDA jda;
+    private static Dotenv config;
+    private static JDABuilder builder;
 
     public static void main(String[] args) throws InterruptedException {
-        CONFIG = Dotenv.configure().load();
-        JDABuilder builder = JDABuilder.createDefault(CONFIG.get("TOKEN"));
+        config = Dotenv.configure().load();
+        builder = JDABuilder.createDefault(config.get("TOKEN"));
         builder.setStatus(OnlineStatus.ONLINE);
         builder.setMemberCachePolicy(MemberCachePolicy.ALL);
         builder.setActivity(Activity.watching("Evolving"));
         builder.enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES, GatewayIntent.MESSAGE_CONTENT);
         builder.addEventListeners(new EventManager(), new CommandListener());
-        JDA = builder.build();
-        JDA.awaitReady();
+        jda = builder.build();
+        jda.awaitReady();
         new BlackJackGame();
     }
 
-    public static JDA getJDA() {
-        return JDA;
+    public static JDA getJda() {
+        return jda;
     }
 
     public static Dotenv getConfig () {
-        return CONFIG;
+        return config;
     }
 
+    public static JDABuilder getBuilder() {
+        return builder;
+    }
 }
