@@ -7,7 +7,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
 public class CommandListener extends ListenerAdapter {
-    public final static  String BOT_SPAM_CHANNEL = Bot.getConfig().get("BOT_SPAM_ID");
+    public final static String BOT_SPAM_CHANNEL = Bot.getConfig().get("BOT_SPAM_ID");
 
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {

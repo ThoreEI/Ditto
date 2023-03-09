@@ -149,6 +149,7 @@ public class BlackJackGame {
     // player gives up and gets half of chips back
     private void surrender(Player player) {
         BLACK_JACK_GAME_CHANNEL.sendMessage(player.getName() + " gibt auf. Die Hälfte des Einsatzes geht zurück.").queue();
+        printSpace();
         looses++;
         player.chips += player.betAmount/2;
         player.betAmount=0;
