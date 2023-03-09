@@ -7,11 +7,10 @@ public class Player extends Person {
 //    private int wins, looses, pushes;
 
     public Player(String name)  {
-        super(name);
-        new Player(this.getName(), 100);
+        this(name, 100);
     }
 
-    public Player(String name, int chips)  {
+    protected Player(String name, int chips)  {
         super(name);
         this.chips = chips;
         this.betAmount = 0;
