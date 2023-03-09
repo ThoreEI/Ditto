@@ -11,7 +11,7 @@ import java.util.Objects;
 
 public class BlackJackGame {
     @NotNull
-    private final static TextChannel BLACK_JACK_GAME_CHANNEL = Objects.requireNonNull(Bot.getJda().getTextChannelById(Bot.getConfig().get("BLACK_JACK_GAME_ID")));
+    public final static TextChannel BLACK_JACK_GAME_CHANNEL = Objects.requireNonNull(Bot.getJda().getTextChannelById(Bot.getConfig().get("BLACK_JACK_GAME_ID")));
     private static Deck playingDeck;
     private static ArrayList<Player> players;
     private static Dealer dealer;
@@ -216,7 +216,4 @@ public class BlackJackGame {
         return "Punktestand: {" + "wins=" + wins + ", looses=" + looses + ", pushes=" + pushes + '}';
     }
 
-    public static TextChannel getBlackJackGameChannel () {
-        return BLACK_JACK_GAME_CHANNEL;
-    }
 }

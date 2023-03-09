@@ -1,6 +1,4 @@
 package com.thore.bot;
-
-import com.thore.bot.games.blackJack.blackJackGame.BlackJackGame;
 import com.thore.bot.listeners.CommandListener;
 import com.thore.bot.listeners.EventManager;
 import io.github.cdimascio.dotenv.Dotenv;
