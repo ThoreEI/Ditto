@@ -8,7 +8,7 @@ public class MessageListener extends ListenerAdapter {
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         if (event.getChannel().getId().equals(Bot.getConfig().get("BLACK_JACK_GAME_ID"))
-                || event.getChannel().getId().equals(Bot.getConfig().get("BOT_CHANNEL"))
+                || event.getChannel().getId().equals(Bot.getConfig().get("BOT_SPAM_ID"))
                 || event.getAuthor().isBot()
                 || event.isWebhookMessage())
             return;
