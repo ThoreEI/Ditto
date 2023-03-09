@@ -1,9 +1,7 @@
 package com.thore.bot.games.blackJack.blackJackGame;
 import com.thore.bot.games.blackJack.domain.*;
-import com.thore.bot.io.messenger.ImageMessenger;
 
 import javax.swing.*;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -32,19 +30,20 @@ public class BlackJackGame extends JPanel {
     }
 
     private void startRound() {
-        while (true) {
-            if (wins > 0 || looses > 0  || pushes > 0)
+        // TODO condition
+        for (int i = 0; i < 5; i++) {
+            if (!(wins > 0 || looses > 0  || pushes > 0))
                 System.out.println("Willkommen zum Black Jack!");
             for (Player player : players)
                 placeBet(player);
             dealOutStarterHands();
             renderCards();
             checkForBlackJacks();
-            checkForBusts();
             for (Player player : players)
                 makeDecision(player);
-            SCANNER_IN.close();
+            checkForBusts();
         }
+        SCANNER_IN.close();
     }
 
     private void checkForBlackJacks() {
@@ -64,7 +63,7 @@ public class BlackJackGame extends JPanel {
                 player.betAmount = 0;
                 startRound();
             } else if (dealer.hasBlackJack()) {
-                System.out.println(dealer.getName() + " hat ein BlackJack!" + player.getName() + " hat verloren.");
+                System.out.println(dealer.getName() + " hat ein BlackJack! " + player.getName() + " hat verloren.");
                 looses++;
                 player.betAmount = 0;
                 startRound();
@@ -80,7 +79,6 @@ public class BlackJackGame extends JPanel {
                 startRound();
             }
     }
-
 
     // TODO buttons
     private void makeDecision(Player player) {
@@ -105,6 +103,9 @@ public class BlackJackGame extends JPanel {
         do {
             System.out.println(currentPlayer.getName() + " erhält eine Karte.");
             currentPlayer.hand.drawCard(playingDeck);
+            renderCards();
+            checkForBlackJacks();
+            checkForBusts();
             System.out.println("1 -> Eine weitere Karte?");
             System.out.println("2 -> Keine weitere Karte?");
             int selection = SCANNER_IN.nextInt();
@@ -147,12 +148,14 @@ public class BlackJackGame extends JPanel {
 
     // TODO dc-channel
     private void placeBet(Player currentPlayer) {
-        System.out.println(currentPlayer.getName() + ": Wie hoch ist dein Einsatz (0-" + currentPlayer.chips + ")?");
+        System.out.println(currentPlayer.getName() + " hat "  + currentPlayer.chips + " Chips.\nWie hoch ist dein Einsatz?");
         int betAmount = SCANNER_IN.nextInt();
-        if (currentPlayer.chips < betAmount)
+        if (betAmount <= 0 || currentPlayer.chips < betAmount) {
+            System.err.println("Du musst mindestens einen Chip und maximal " + currentPlayer.chips + " Chips setzen.");
             placeBet(currentPlayer);
+        }
         currentPlayer.chips -=betAmount;
-        currentPlayer.betAmount=betAmount;
+        currentPlayer.betAmount = betAmount;
     }
 
     private void dealOutStarterHands() {
@@ -168,16 +171,16 @@ public class BlackJackGame extends JPanel {
 
     public void renderCards() {
         for (Player player : players) {
-            System.out.println(player.getName() + " Hand:" + player.hand + "Value: " + player.hand.calculateValue());
+            System.out.println(player.getName() + "'s Hand: " +  player.hand.calculateValue() + " Punkte.\n" + player.hand);
             for (int index = 0; index < player.hand.getNumberOfCards(); index++) {
                 String rank = player.hand.getCard(index).getRank().toString();
                 String suit = player.hand.getCard(index).getSuit().toString();
                 String filename = rank + suit + ".png";
-                try {
-                    ImageMessenger.sendPngToTextChannel(filename);
-                } catch (IOException e) {
-                    throw new RuntimeException("An error occurred while trying to send the png image.");
-                }
+//                try {
+//                    ImageMessenger.sendPngToTextChannel(filename);
+//                } catch (IOException e) {
+//                    throw new RuntimeException("An error occurred while trying to send the png image.");
+//                }
             }
         }
     }
