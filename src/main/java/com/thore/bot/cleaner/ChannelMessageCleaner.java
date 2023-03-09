@@ -9,7 +9,7 @@ public class ChannelMessageCleaner {
 
     public static void checkTextChannel() {
         List<Message> messages;
-        for (TextChannel channel : Bot.getJDA().getTextChannels()) {
+        for (TextChannel channel : Bot.getJda().getTextChannels()) {
             messages = channel.getHistory().retrievePast(50).complete();
             channel.deleteMessages(messages).queue();
         }
