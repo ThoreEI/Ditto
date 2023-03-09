@@ -14,11 +14,10 @@ import net.dv8tion.jda.api.utils.MemberCachePolicy;
 public class Bot {
     private static JDA jda;
     private static Dotenv config;
-    private static JDABuilder builder;
 
     public static void main(String[] args) throws InterruptedException {
         config = Dotenv.configure().load();
-        builder = JDABuilder.createDefault(config.get("TOKEN"));
+        JDABuilder builder = JDABuilder.createDefault(config.get("TOKEN"));
         builder.setStatus(OnlineStatus.ONLINE);
         builder.setMemberCachePolicy(MemberCachePolicy.ALL);
         builder.setActivity(Activity.watching("Evolving"));
@@ -26,7 +25,6 @@ public class Bot {
         builder.addEventListeners(new EventManager(), new CommandListener());
         jda = builder.build();
         jda.awaitReady();
-        new BlackJackGame();
     }
 
     public static JDA getJda() {
@@ -35,9 +33,5 @@ public class Bot {
 
     public static Dotenv getConfig () {
         return config;
-    }
-
-    public static JDABuilder getBuilder() {
-        return builder;
     }
 }

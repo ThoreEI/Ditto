@@ -11,13 +11,12 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 public class MessageListener extends ListenerAdapter {
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        if (event.getChannel() != BlackJackGame.getBlackJackGameChannel()
+        if (event.getChannel().getId().equals(Bot.getConfig().get("BLACK_JACK_GAME_ID"))
+                || event.getChannel().getId().equals(Bot.getConfig().get("BOT_CHANNEL"))
                 || event.getAuthor().isBot()
-                || event.isWebhookMessage()
-                || event.getChannel().getId().equals(Bot.getConfig().get("BOT_CHANNEL")))
+                || event.isWebhookMessage())
             return;
         String content = event.getMessage().getContentRaw();
-        BlackJackGame.getBlackJackGameChannel()
-                .sendMessage("HEY" + content).queue();
+        BlackJackGame.getBlackJackGameChannel().sendMessage("\""+ content + "\"").queue();
     }
 }
