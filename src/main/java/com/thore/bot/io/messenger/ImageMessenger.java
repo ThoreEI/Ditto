@@ -7,10 +7,9 @@ import java.io.*;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Objects;
 
 public class ImageMessenger  {
-    public final static  String BLACK_JACK_SPIEL_CHANNEL = Bot.getConfig().get("BOT_CHANNEL");
-
 
     public static void sendPngToTextChannel(String pngFilePath) throws IOException {
         File pngFile = new File(pngFilePath);
@@ -18,7 +17,9 @@ public class ImageMessenger  {
             throw new FileNotFoundException("PNG file not found.");
         //InputStream pngStream = new FileInputStream(pngFile);
         byte[] pngData = Files.readAllBytes(pngFile.toPath());
-        System.out.println(Arrays.toString(pngData));
+        Objects.requireNonNull(
+                        Bot.getJda().getTextChannelById(Bot.getConfig().get("BLACK_JACK_GAME_ID"))
+                ).sendMessage(Arrays.toString(pngData)).queue();
         String pngBase64 = Base64.getEncoder().encodeToString(pngData);
         try {
             BufferedImage newCard = FileReader.loadCard(pngFilePath);
