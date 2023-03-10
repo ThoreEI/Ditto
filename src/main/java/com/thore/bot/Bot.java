@@ -13,7 +13,7 @@ public class Bot {
     private static JDA jda;
     private static Dotenv config;
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         config = Dotenv.configure().load();
         JDABuilder builder = JDABuilder.createDefault(config.get("TOKEN"));
         builder.setStatus(OnlineStatus.ONLINE);
@@ -22,7 +22,11 @@ public class Bot {
         builder.enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES, GatewayIntent.MESSAGE_CONTENT);
         builder.addEventListeners(new EventManager(), new CommandListener());
         jda = builder.build();
-        jda.awaitReady();
+        try {
+            jda.awaitReady();
+        } catch (InterruptedException e) {
+            System.err.println("The API couldn't connect to the server.");
+        }
     }
 
     public static JDA getJda() {
