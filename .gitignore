@@ -37,3 +37,4 @@ build/
 .DS_Store
 /.idea/
 /.env
+/src/main/java/com/thore/bot/io/files/
