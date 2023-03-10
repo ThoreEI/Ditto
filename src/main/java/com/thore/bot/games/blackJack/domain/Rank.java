@@ -15,8 +15,17 @@ public enum Rank {
     KING("King", 10),
     ACE("Ace", 11);
 
-    String rankName;
-    int rankValue;
+    private final String rankName;
+
+    public String getRankName() {
+        return rankName;
+    }
+
+    public int getRankValue() {
+        return rankValue;
+    }
+
+    private final int rankValue;
 
     Rank(String rankName, int rankValue) {
         this.rankName=rankName;
@@ -24,6 +33,6 @@ public enum Rank {
     }
 
     public String toString() {
-        return rankName;
+        return rankName + " " + rankValue;
     }
 }

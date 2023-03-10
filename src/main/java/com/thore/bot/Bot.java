@@ -1,6 +1,5 @@
 package com.thore.bot;
-import com.thore.bot.listeners.CommandListener;
-import com.thore.bot.listeners.EventManager;
+import com.thore.bot.listeners.*;
 import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -18,9 +17,9 @@ public class Bot {
         JDABuilder builder = JDABuilder.createDefault(config.get("TOKEN"));
         builder.setStatus(OnlineStatus.ONLINE);
         builder.setMemberCachePolicy(MemberCachePolicy.ALL);
-        builder.setActivity(Activity.watching("Evolving"));
+        builder.setActivity(Activity.watching("activities"));
         builder.enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES, GatewayIntent.MESSAGE_CONTENT);
-        builder.addEventListeners(new EventManager(), new CommandListener());
+        builder.addEventListeners(new EventManager(), new CommandListener(), new MessageListener(), new StateListener(), new ReactionListener());
         jda = builder.build();
         try {
             jda.awaitReady();

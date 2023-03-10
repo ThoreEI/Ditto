@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 public class EventManager implements EventListener {
     @Override
     public void onEvent(@NotNull GenericEvent event) {
+
         if (event instanceof GuildMemberJoinEvent) {
             new StateListener().onGuildMemberJoin((GuildMemberJoinEvent) event);
         }
