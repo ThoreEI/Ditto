@@ -18,11 +18,10 @@ public class Hand {
         return hand.get(index);
     }
 
-    public Card drawCard(Deck deck) {
-        Card newCard = deck.drawCard();
-        hand.add(newCard);
-        return newCard;
+    public void drawCard(Deck deck) {
+        hand.add(deck.drawCard());
     }
+
 
     public void shuffleHandIntoDeck(Deck deck) {
         deck.addCards(hand);

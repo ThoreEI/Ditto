@@ -19,5 +19,7 @@ public class CommandListener extends ListenerAdapter {
             event.reply("Blackjack is starting...").queue();
             new BlackJackGame();
         }
+
+        // Erinnerung --> bump --> 100 Coins --> BlackJack --> Bestenliste
     }
 }

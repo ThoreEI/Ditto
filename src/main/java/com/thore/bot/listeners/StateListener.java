@@ -13,6 +13,14 @@ import java.util.Objects;
 
 public class StateListener extends ListenerAdapter {
 
+    @Override
+    public void onGuildReady(@NotNull GuildReadyEvent event) {
+        ArrayList<CommandData> commandDataList = new ArrayList<>();
+        commandDataList.add(Commands.slash("joke", "Witz gefällig?"));
+        commandDataList.add(Commands.slash("blackjack", "BlackJack-Spiel."));
+        event.getGuild().updateCommands().addCommands(commandDataList).queue();
+    }
+
     public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
         MessageChannel channel = Objects.requireNonNull(
                 event.getGuild().getDefaultChannel()).asTextChannel();
@@ -20,12 +28,5 @@ public class StateListener extends ListenerAdapter {
         channel.sendMessage("Welcome to the server " + newMember).queue();
     }
 
-    @Override
-    public void onGuildReady(@NotNull GuildReadyEvent event) {
-        ArrayList<CommandData> commandDataList = new ArrayList<>();
-        commandDataList.add(Commands.slash("joke", "Witz gefällig?"));
-        commandDataList.add(Commands.slash("blackjack", "BlackJack-Spiel."));
 
-        event.getGuild().updateCommands().addCommands(commandDataList).queue();
-    }
 }

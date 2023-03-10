@@ -9,10 +9,10 @@ public class Card implements Comparable<Card> {
         this.rank = rank;
     }
 
-    public Card (Card toCopy) {
-        this.suit = toCopy.getSuit();
-        this.rank = toCopy.getRank();
-    }
+//    public Card (Card toCopy) {
+//        this.suit = toCopy.getSuit();
+//        this.rank = toCopy.getRank();
+//    }
 
     @Override
     public int compareTo(Card card) {
@@ -20,7 +20,7 @@ public class Card implements Comparable<Card> {
     }
 
     public int getValue() {
-        return rank.rankValue;
+        return rank.getRankValue();
     }
 
     public Suit getSuit() {
