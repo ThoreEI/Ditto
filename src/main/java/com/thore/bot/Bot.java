@@ -16,10 +16,16 @@ public class Bot {
         config = Dotenv.configure().load();
         JDABuilder builder = JDABuilder.createDefault(config.get("TOKEN"));
         builder.setStatus(OnlineStatus.ONLINE);
-        builder.setMemberCachePolicy(MemberCachePolicy.ALL);
         builder.setActivity(Activity.watching("activities"));
+        builder.setMemberCachePolicy(MemberCachePolicy.ALL);
         builder.enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES, GatewayIntent.MESSAGE_CONTENT);
-        builder.addEventListeners(new EventManager(), new CommandListener(), new MessageListener(), new StateListener(), new ReactionListener());
+        builder.addEventListeners
+                (new EventManager(),
+                        new CommandListener(),
+                        new MessageListener(),
+                        new StateListener(),
+                        new ReactionListener()
+                );
         jda = builder.build();
         try {
             jda.awaitReady();
