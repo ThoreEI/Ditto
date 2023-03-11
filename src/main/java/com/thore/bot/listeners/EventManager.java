@@ -3,6 +3,7 @@ import com.thore.bot.Bot;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
@@ -17,6 +18,8 @@ public class EventManager implements EventListener {
             new MessageListener().onMessageReceived((MessageReceivedEvent) event);
         if (event instanceof MessageReactionAddEvent)
             new ReactionListener().onMessageReactionAdd((MessageReactionAddEvent) event);
+        if (event instanceof ButtonInteractionEvent)
+            new ReactionListener().onButtonInteraction((ButtonInteractionEvent) event);
     }
 
     public static boolean isBlackJackChannel(MessageChannel channel) {
