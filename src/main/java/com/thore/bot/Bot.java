@@ -19,13 +19,11 @@ public class Bot {
         builder.setActivity(Activity.watching("activities"));
         builder.setMemberCachePolicy(MemberCachePolicy.ALL);
         builder.enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES, GatewayIntent.MESSAGE_CONTENT);
-        builder.addEventListeners
-                (new EventManager(),
-                        new CommandListener(),
-                        new MessageListener(),
-                        new StateListener(),
-                        new ReactionListener()
-                );
+        builder.addEventListeners(new EventManager(),
+                new CommandListener(),
+                new MessageListener(),
+                new StateListener(),
+                new ReactionListener());
         jda = builder.build();
         try {
             jda.awaitReady();

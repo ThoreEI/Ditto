@@ -17,7 +17,7 @@ public class StateListener extends ListenerAdapter {
     public void onGuildReady(@NotNull GuildReadyEvent event) {
         ArrayList<CommandData> commandDataList = new ArrayList<>();
         commandDataList.add(Commands.slash("joke", "Witz gefällig?"));
-        commandDataList.add(Commands.slash("blackjack", "BlackJack-Spiel."));
+        commandDataList.add(Commands.slash("blackjack", "Spiele BlackJack gegen einen Bot."));
         event.getGuild().updateCommands().addCommands(commandDataList).queue();
     }
 
