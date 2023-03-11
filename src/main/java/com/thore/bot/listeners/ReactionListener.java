@@ -1,19 +1,24 @@
 package com.thore.bot.listeners;
-
-import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
+import static com.thore.bot.listeners.EventManager.isBlackJackChannel;
 
 public class ReactionListener extends ListenerAdapter {
 
     @Override
-    public void onMessageReactionAdd(MessageReactionAddEvent event) {
-        String user = Objects.requireNonNull(event.getUser()).getName();
-        String emoji = event.getReaction().getEmoji().getAsReactionCode();
-        String message = "Reaction from " + user + ": " + emoji;
-        event.getChannel().sendMessage(message).queue();
+    public void onMessageReactionAdd(@NotNull MessageReactionAddEvent event) {
+    super.onMessageReactionAdd(event);
     }
 
+    @Override
+    public void onButtonInteraction(ButtonInteractionEvent event) {
+        if (!isBlackJackChannel(event.getChannel()))
+            return;
+        String username = event.getUser().getName();
+        String amountChips = event.getButton().getLabel();
+        event.getChannel().sendMessage(username + " setzt " + amountChips).queue();
+    }
 }
