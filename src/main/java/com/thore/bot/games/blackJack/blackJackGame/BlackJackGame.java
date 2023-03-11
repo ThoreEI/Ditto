@@ -2,9 +2,11 @@ package com.thore.bot.games.blackJack.blackJackGame;
 import com.thore.bot.Bot;
 import com.thore.bot.games.blackJack.domain.*;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.ItemComponent;
+import org.apache.cassandra.transport.Message;
 import org.jetbrains.annotations.NotNull;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import java.time.Instant;
@@ -41,7 +43,6 @@ public class BlackJackGame {
     private void startRound() {
         // TODO condition
         while (true) {
-            printSpace();
             if (!(wins > 0 || looses > 0  || pushes > 0))
                 BLACK_JACK_GAME_CHANNEL.sendMessage("Willkommen zum Black Jack!").queue();
             for (Player player : players)
@@ -106,7 +107,6 @@ public class BlackJackGame {
         boolean hasChosenHitAgain;
         do {
             BLACK_JACK_GAME_CHANNEL.sendMessage(currentPlayer.getName() + " erhält eine Karte.").queue();
-            printSpace();
             currentPlayer.hand.drawCard(playingDeck);
             renderCards();
             checkForBlackJacks();
@@ -149,7 +149,6 @@ public class BlackJackGame {
     // player gives up and gets half of chips back
     private void surrender(Player player) {
         BLACK_JACK_GAME_CHANNEL.sendMessage(player.getName() + " gibt auf. Die Hälfte des Einsatzes geht zurück.").queue();
-        printSpace();
         looses++;
         player.chips += player.betAmount/2;
         player.betAmount=0;
@@ -158,29 +157,41 @@ public class BlackJackGame {
     // TODO dc-channel
     private void placeBet(Player currentPlayer) {
         BLACK_JACK_GAME_CHANNEL.sendMessage(currentPlayer.getName() + " hat "  + currentPlayer.chips + " Chips.").queue();
-        BLACK_JACK_GAME_CHANNEL.sendMessage("Wie hoch ist dein Einsatz?").queue();
-
         EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setTitle("Example Embed");
+        embedBuilder.setTitle("Einsatz wählen");
         embedBuilder.setColor(Color.RED);
         embedBuilder.setTimestamp(Instant.now());
-        embedBuilder.addField("Field 1", "This is the first field", false);
-        embedBuilder.addField("Field 2", "This is the second field", false);
+        embedBuilder.addField("Spieler: " + currentPlayer.getName(), "Wie hoch ist dein Einsatz?", false);
+        embedBuilder.addField("Verfügbare Chips: " + currentPlayer.chips,"Wähle einen der Buttons.", false);
 
-        ArrayList<ItemComponent> buttonList = new ArrayList<>();
-        buttonList.add(Button.primary("button1", "Button 1"));
-        buttonList.add(Button.success("button2", "Button 2"));
-        buttonList.add(Button.danger("button3", "Button 3"));
-        BLACK_JACK_GAME_CHANNEL.sendMessageEmbeds(embedBuilder.build()).addActionRow(buttonList).queue();
+        ArrayList<ItemComponent> firstRowChips= new ArrayList<>();
+        if (currentPlayer.chips >= 1)
+            firstRowChips.add(Button.secondary("btnChip1", "1 Chip"));
+        if (currentPlayer.chips >= 5)
+            firstRowChips.add(Button.secondary("btnChip5", "5 Chips"));
+        if (currentPlayer.chips >= 10)
+            firstRowChips.add(Button.success("btnChip10", "10 Chips"));
+        if (currentPlayer.chips >= 25)
+            firstRowChips.add(Button.success("btnChip25", "25 Chips"));
+        ArrayList<ItemComponent> secondRowChips= new ArrayList<>();
+        if (currentPlayer.chips >= 50)
+            secondRowChips.add(Button.primary("btnChip50", "50 Chips"));
+        if (currentPlayer.chips >= 100)
+            secondRowChips.add(Button.primary("btnChip100", "100 Chips"));
+        if (currentPlayer.chips >= 200)
+            secondRowChips.add(Button.danger("btnChip200", "200 Chips"));
+        if (currentPlayer.chips >= 500)
+            secondRowChips.add(Button.danger("btnChip500", "500 Chips"));
+        if (currentPlayer.chips >= 1000)
+            secondRowChips.add(Button.danger("btnChip1000", "1000 Chips"));
+
+        BLACK_JACK_GAME_CHANNEL.sendMessageEmbeds(embedBuilder.build())
+                .addActionRow(firstRowChips)
+                .addActionRow(secondRowChips).queue();
 
         int betAmount = 1;
-//        if (betAmount <= 0 || currentPlayer.chips < betAmount) {
-//            System.err.println("Du musst mindestens einen Chip und maximal " + currentPlayer.chips + " Chips setzen.");
-//            placeBet(currentPlayer);
-//        }
         currentPlayer.chips -=betAmount;
         currentPlayer.betAmount = betAmount;
-        printSpace();
     }
 
     private void dealOutStarterHands() {
@@ -199,7 +210,6 @@ public class BlackJackGame {
             String name = player.getName();
             int value = player.hand.calculateValue();
             BLACK_JACK_GAME_CHANNEL.sendMessage(name + "'s Hand: " +  value + " Punkte.\n" + player.hand).queue();
-            printSpace();
             for (int index = 0; index < player.hand.getNumberOfCards(); index++) {
                 String rank = player.hand.getCard(index).getRank().toString();
                 String suit = player.hand.getCard(index).getSuit().toString();
@@ -210,14 +220,9 @@ public class BlackJackGame {
 //                    throw new RuntimeException("An error occurred while trying to send the png image.");
 //                }
             }
-            printSpace();
         }
     }
 
-    private static void printSpace() {
-        for (int printedLines=0; printedLines<2; printedLines++)
-            BLACK_JACK_GAME_CHANNEL.sendMessage("|").queue();
-    }
 
     @Override
     public String toString() {
