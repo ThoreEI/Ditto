@@ -1,5 +1,4 @@
 package com.thore.bot.listeners;
-import com.thore.bot.Bot;
 import com.thore.bot.games.blackJack.blackJackGame.BlackJackGame;
 import com.thore.bot.io.reader.FileReader;
 import net.dv8tion.jda.api.entities.channel.concrete.Category;
@@ -16,8 +15,10 @@ public class CommandListener extends ListenerAdapter {
 
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
-        if (isBotSpamChannel(event.getChannel()))
+        if (isBotSpamChannel(event.getChannel())) {
+            event.reply("Hey" + event.getUser().getName() + "! Raus aus meinem Channel!").queue();
             return;
+        }
         else if (event.getName().equals("joke") && isJokesChannel(event.getChannel()))
             event.reply(FileReader.loadJoke()).queue();
         else if (event.getName().equals("blackjack") && isBlackJackChannel(event.getChannel())) {
@@ -31,6 +32,7 @@ public class CommandListener extends ListenerAdapter {
             event.reply("Blackjack is starting...").queue();
             new BlackJackGame(temporaryChannel);
         }
+        System.out.println();
 
         // Erinnerung --> bump --> 100 Coins --> BlackJack --> Bestenliste
     }
