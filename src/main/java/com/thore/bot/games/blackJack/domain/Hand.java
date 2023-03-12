@@ -3,9 +3,11 @@ import java.util.ArrayList;
 
 public class Hand {
     private ArrayList<Card> hand;
+    public int betAmount;
 
     public Hand() {
         hand = new ArrayList<>();
+        this.betAmount = 0;
     }
 
     public Hand(Card card1, Card card2) {

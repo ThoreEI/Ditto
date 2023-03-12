@@ -4,23 +4,19 @@ public class Player extends Person {
     public Hand secondHand;
     public int chips;
     public int betAmount;
-//    private int wins, looses, pushes;
+    private int wins, looses, pushes;
 
     public Player(String name)  {
-        this(name, 100);
-    }
-
-    protected Player(String name, int chips)  {
         super(name);
-        this.chips = chips;
+        this.chips = 0;
         this.betAmount = 0;
-        //  this.wins = 0;
-        //  this.looses = 0;
-        // this.pushes = 0;
+        this.wins = 0;
+        this.looses = 0;
+        this.pushes = 0;
         this.secondHand = null; // TODO solution without null
     }
 
-    /*
+
     public void incrementWins() {
         this.wins++;
     }
@@ -31,8 +27,12 @@ public class Player extends Person {
         this.pushes++;
     }
 
-    public boolean hasSecondHand() {
-        return secondHand != null;
+    @Override
+    public String toString() {
+        return "Player{" +
+                "wins=" + wins +
+                ", looses=" + looses +
+                ", pushes=" + pushes +
+                '}';
     }
-     */
 }

@@ -53,11 +53,11 @@ public class BlackJackGame {
             if (player.hasBlackJack() && dealer.hasBlackJack()) {
                 gameChannel.sendMessage("Unentschieden. " + player.getName() + " erhält seinen Einsatz zurück.").queue();
                 pushes++;
-                player.chips += player.betAmount;
+                player.chips += player.hand.betAmount;
             } else if (player.hasBlackJack()) {
-                gameChannel.sendMessage(player.getName() + " hat ein BlackJack! Gewinn: " + player.betAmount * 1.5).queue();
+                gameChannel.sendMessage(player.getName() + " hat ein BlackJack! Gewinn: " + player.hand.betAmount * 1.5).queue();
                 wins++;
-                player.chips += player.betAmount * 1.5;
+                player.chips += player.hand.betAmount * 1.5;
             } else if (dealer.hasBlackJack()) {
                 gameChannel.sendMessage(dealer.getName() + " hat ein BlackJack! " + player.getName() + " hat verloren.").queue();
                 looses++;
