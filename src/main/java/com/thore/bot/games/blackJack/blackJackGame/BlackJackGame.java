@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class BlackJackGame {
     private static TextChannel gameChannel;
     private static Deck playingDeck;
-    private static ArrayList<Player> players;
+    public static ArrayList<Player> players;
     private static Dealer dealer;
     private int wins, looses, pushes;
 
@@ -17,7 +17,6 @@ public class BlackJackGame {
         gameChannel = textChannel;
         buildDeck();
         createUsers();
-        startRound();
     }
 
     private void buildDeck() {
@@ -27,12 +26,10 @@ public class BlackJackGame {
 
     private void createUsers() {
         players = new ArrayList<>();
-        // TODO selection player's
-        players.add(new Player("Thore")); // TODO Discord name
         dealer = new Dealer();
     }
 
-    private void startRound() {
+    public void startRound() {
         // TODO condition
         while (true) {
             if (!(wins > 0 || looses > 0  || pushes > 0))
