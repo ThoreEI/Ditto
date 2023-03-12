@@ -6,12 +6,8 @@ import java.util.Set;
 public class DBHandler {
     private static final String DB_URL = "jdbc:sqlite:src/main/resources/db/Ditto.sqlite";
 
-    public DBHandler() {
-        try {
-            createNewTable();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
+    public DBHandler() throws SQLException {
+        createNewTable();
     }
 
     private Connection getConnection() throws SQLException {
