@@ -29,5 +29,8 @@ public class EventManager implements EventListener {
     public static boolean isBotSpamChannel(MessageChannel channel) {
         return channel.getId().equals(Bot.getConfig().get("BOT_SPAM_ID"));
     }
+    public static boolean isJokesChannel(MessageChannel channel) {
+        return channel.getId().equals(Bot.getConfig().get("JOKES_ID"));
+    }
 
 }
