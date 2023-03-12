@@ -1,4 +1,4 @@
-package com.thore.bot.io;
+package com.thore.bot.io.database;
 
 import java.sql.*;
 import java.util.Set;
