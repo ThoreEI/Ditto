@@ -20,9 +20,10 @@ public class CommandListener extends ListenerAdapter {
             return;
         else if (event.getName().equals("joke") && isJokesChannel(event.getChannel()))
             event.reply(FileReader.loadJoke()).queue();
+
         else if (event.getName().equals("blackjack") && isBlackJackChannel(event.getChannel())) {
             Category blackjack = Objects.requireNonNull(
-                            event.getGuild())
+                    event.getGuild())
                     .getCategoriesByName("blackjack", true)
                     .get(0);
             TextChannel temporaryChannel = blackjack.createTextChannel("Black Jack Game " + blackjack.getChannels().size())
@@ -32,6 +33,6 @@ public class CommandListener extends ListenerAdapter {
             new BlackJackGame(temporaryChannel);
         } else if (event.getName().equals("join") && isBlackJackChannel(event.getChannel()))
             BlackJackGame.players.add(new Player(event.getUser().getName()));
-        // Erinnerung --> bump --> 100 Coins --> BlackJack --> Bestenliste
+        System.out.println();
     }
 }
