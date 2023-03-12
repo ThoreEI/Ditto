@@ -8,15 +8,15 @@ public class Deck {
     private static ArrayList<Card> deck;
 
     public Deck() {
+        createDeck();
+    }
+
+    private void createDeck() {
         deck = new ArrayList<>();
         for (Suit suit : Suit.values())
             for (Rank rank : Rank.values())
                 deck.add(new Card(suit, rank));
         shuffle();
-    }
-
-    public Deck(Deck other) {
-        Collections.copy(this.getDeck(), other.getDeck());  // TODO   benötigt?
     }
 
     public void shuffle() {
@@ -38,10 +38,13 @@ public class Deck {
     }
 
     public Card drawCard() {
-        if (isEmpty()) // TODO verhindern
-            throw new IndexOutOfBoundsException("Der Kartenstapel ist leer");
+        if (isEmpty())
+            createDeck();
+        // replenishWithCards(new Deck()); // TODO discarded deck
         return getDeck().remove(0);
     }
+
+
 
     public boolean isEmpty() {
         return deck.size()==0;
