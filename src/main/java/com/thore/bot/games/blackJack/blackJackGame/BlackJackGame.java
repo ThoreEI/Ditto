@@ -6,14 +6,12 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.interactions.components.ItemComponent;
 import org.jetbrains.annotations.NotNull;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import java.time.Instant;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class BlackJackGame {
     @NotNull
-    public final static TextChannel BLACK_JACK_GAME_CHANNEL = Objects.requireNonNull(Bot.getJda().getTextChannelById(Bot.getConfig().get("BLACK_JACK_GAME_ID")));
+    private final static TextChannel BLACK_JACK_GAME_CHANNEL = Objects.requireNonNull(Bot.getJda().getTextChannelById(Bot.getConfig().get("BLACK_JACK_GAME_ID")));
     private static Deck playingDeck;
     private static ArrayList<Player> players;
     private static Dealer dealer;
@@ -32,6 +30,7 @@ public class BlackJackGame {
 
     private void createUsers() {
         players = new ArrayList<>();
+        
         players.add(new Player("Thore")); // TODO Discord name
         dealer = new Dealer();
     }
@@ -152,39 +151,20 @@ public class BlackJackGame {
 
     // TODO dc-channel
     private void placeBet(Player currentPlayer) {
-        BLACK_JACK_GAME_CHANNEL.sendMessage(currentPlayer.getName() + " hat "  + currentPlayer.chips + " Chips.").queue();
         EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setTitle("Einsatz wählen");
-        embedBuilder.setColor(Color.RED);
-        embedBuilder.setTimestamp(Instant.now());
-        embedBuilder.addField("Spieler: " + currentPlayer.getName(), "Wie hoch ist dein Einsatz?", false);
-        embedBuilder.addField("Verfügbare Chips: " + currentPlayer.chips,"Wähle einen der Buttons.", false);
-
-        ArrayList<ItemComponent> firstRowChips= new ArrayList<>();
-        if (currentPlayer.chips >= 1)
-            firstRowChips.add(Button.secondary("btnChip1", "1 Chip"));
-        if (currentPlayer.chips >= 5)
-            firstRowChips.add(Button.secondary("btnChip5", "5 Chips"));
-        if (currentPlayer.chips >= 10)
-            firstRowChips.add(Button.success("btnChip10", "10 Chips"));
-        if (currentPlayer.chips >= 25)
-            firstRowChips.add(Button.success("btnChip25", "25 Chips"));
-        ArrayList<ItemComponent> secondRowChips= new ArrayList<>();
-        if (currentPlayer.chips >= 50)
-            secondRowChips.add(Button.primary("btnChip50", "50 Chips"));
-        if (currentPlayer.chips >= 100)
-            secondRowChips.add(Button.primary("btnChip100", "100 Chips"));
-        if (currentPlayer.chips >= 200)
-            secondRowChips.add(Button.danger("btnChip200", "200 Chips"));
-        if (currentPlayer.chips >= 500)
-            secondRowChips.add(Button.danger("btnChip500", "500 Chips"));
-        if (currentPlayer.chips >= 1000)
-            secondRowChips.add(Button.danger("btnChip1000", "1000 Chips"));
+        embedBuilder.setTitle("Auswahl der Einsätze");
+        embedBuilder.addField(currentPlayer.getName(), " ist an der Reihe.", false);
+        embedBuilder.addField("Verfügbare Chips: " + currentPlayer.chips,"Wähle deinen Einsatz.", false);
+        ArrayList<ItemComponent> firstRowOfChips = new ArrayList<>();
+        ArrayList<ItemComponent> secondRowOfChips= new ArrayList<>();
+        for (int coinValue : new int[] { 1, 5, 10, 25, 50})
+            firstRowOfChips.add(Button.primary("btnChip" + coinValue, String.valueOf(coinValue)));
+        for (int coinValue : new int[] { 100, 200, 500, 1000, 5000})
+            secondRowOfChips.add(Button.danger("btnChip" + coinValue, String.valueOf(coinValue)));
 
         BLACK_JACK_GAME_CHANNEL.sendMessageEmbeds(embedBuilder.build())
-                .addActionRow(firstRowChips)
-                .addActionRow(secondRowChips).queue();
-
+                .addActionRow(firstRowOfChips)
+                .addActionRow(secondRowOfChips).queue();
         int betAmount = 1;
         currentPlayer.chips -=betAmount;
         currentPlayer.betAmount = betAmount;
@@ -205,7 +185,7 @@ public class BlackJackGame {
         for (Player player : players) {
             String name = player.getName();
             int value = player.hand.calculateValue();
-            BLACK_JACK_GAME_CHANNEL.sendMessage(name + "'s Hand: " +  value + " Punkte.\n" + player.hand).queue();
+            //BLACK_JACK_GAME_CHANNEL.sendMessage(name + "'s Hand: " +  value + " Punkte.\n" + player.hand).queue();
             for (int index = 0; index < player.hand.getNumberOfCards(); index++) {
                 String rank = player.hand.getCard(index).getRank().toString();
                 String suit = player.hand.getCard(index).getSuit().toString();
@@ -219,10 +199,8 @@ public class BlackJackGame {
         }
     }
 
-
     @Override
     public String toString() {
         return "Punktestand: {" + "wins=" + wins + ", looses=" + looses + ", pushes=" + pushes + '}';
     }
-
 }
