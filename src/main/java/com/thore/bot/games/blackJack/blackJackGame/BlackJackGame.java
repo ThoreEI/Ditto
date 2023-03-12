@@ -4,19 +4,20 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.interactions.components.ItemComponent;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+
 import java.util.ArrayList;
 
 public class BlackJackGame {
+    public static ArrayList<Player> players;
     private static TextChannel gameChannel;
     private static Deck playingDeck;
-    public static ArrayList<Player> players;
     private static Dealer dealer;
     private int wins, looses, pushes;
 
     public BlackJackGame(TextChannel textChannel) {
         gameChannel = textChannel;
         buildDeck();
-        createUsers();
+        createUser();
     }
 
     private void buildDeck() {
@@ -24,15 +25,15 @@ public class BlackJackGame {
         playingDeck.shuffle();
     }
 
-    private void createUsers() {
-        players = new ArrayList<>();
+    private void createUser() {
+        BlackJackGame.players = new ArrayList<>();
         dealer = new Dealer();
     }
 
     public void startRound() {
         // TODO condition
         while (true) {
-            if (!(wins > 0 || looses > 0  || pushes > 0))
+            if (wins == 0 && looses == 0  && pushes == 0)
                 gameChannel.sendMessage("Willkommen zum Black Jack!").queue();
             for (Player player : players)
                 placeBet(player);
@@ -153,7 +154,7 @@ public class BlackJackGame {
         ArrayList<ItemComponent> secondRowOfChips= new ArrayList<>();
         for (int coinValue : new int[] { 1, 5, 10, 25, 50})
             firstRowOfChips.add(Button.primary("btnChip" + coinValue, String.valueOf(coinValue)));
-        for (int coinValue : new int[] { 100, 200, 500, 1000, 5000})
+        for (int coinValue : new int[] {100, 200, 500, 1000, 5000})
             secondRowOfChips.add(Button.danger("btnChip" + coinValue, String.valueOf(coinValue)));
 
         gameChannel.sendMessageEmbeds(embedBuilder.build())
@@ -184,11 +185,7 @@ public class BlackJackGame {
                 String rank = player.hand.getCard(index).getRank().toString();
                 String suit = player.hand.getCard(index).getSuit().toString();
                 String filename = rank + suit + ".png";
-//                try {
-//                    ImageMessenger.sendPngToTextChannel(filename);
-//                } catch (IOException e) {
-//                    throw new RuntimeException("An error occurred while trying to send the png image.");
-//                }
+                // gameChannel.sendMessage("").addFiles(new FileUpload()filename)
             }
         }
     }
