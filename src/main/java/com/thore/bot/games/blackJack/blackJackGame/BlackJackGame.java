@@ -1,27 +1,20 @@
 package com.thore.bot.games.blackJack.blackJackGame;
-import com.thore.bot.Bot;
 import com.thore.bot.games.blackJack.domain.*;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.ItemComponent;
-import org.jetbrains.annotations.NotNull;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import java.time.Instant;
-import java.awt.*;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Objects;
 
 public class BlackJackGame {
-    @NotNull
-    public final static TextChannel BLACK_JACK_GAME_CHANNEL = Objects.requireNonNull(Bot.getJda().getTextChannelById(Bot.getConfig().get("BLACK_JACK_GAME_ID")));
+    private static TextChannel gameChannel;
     private static Deck playingDeck;
     private static ArrayList<Player> players;
     private static Dealer dealer;
     private int wins, looses, pushes;
 
-    public BlackJackGame() {
+    public BlackJackGame(TextChannel textChannel) {
+        gameChannel = textChannel;
         buildDeck();
         createUsers();
         startRound();
@@ -34,6 +27,7 @@ public class BlackJackGame {
 
     private void createUsers() {
         players = new ArrayList<>();
+        // TODO selection player's
         players.add(new Player("Thore")); // TODO Discord name
         dealer = new Dealer();
     }
@@ -41,9 +35,8 @@ public class BlackJackGame {
     private void startRound() {
         // TODO condition
         while (true) {
-            printSpace();
             if (!(wins > 0 || looses > 0  || pushes > 0))
-                BLACK_JACK_GAME_CHANNEL.sendMessage("Willkommen zum Black Jack!").queue();
+                gameChannel.sendMessage("Willkommen zum Black Jack!").queue();
             for (Player player : players)
                 placeBet(player);
             dealOutStarterHands();
@@ -58,15 +51,15 @@ public class BlackJackGame {
     private void checkForBlackJacks() {
         for (Player player : players) {
             if (player.hasBlackJack() && dealer.hasBlackJack()) {
-                BLACK_JACK_GAME_CHANNEL.sendMessage("Unentschieden. " + player.getName() + " erhält seinen Einsatz zurück.").queue();
+                gameChannel.sendMessage("Unentschieden. " + player.getName() + " erhält seinen Einsatz zurück.").queue();
                 pushes++;
                 player.chips += player.betAmount;
             } else if (player.hasBlackJack()) {
-                BLACK_JACK_GAME_CHANNEL.sendMessage(player.getName() + " hat ein BlackJack! Gewinn: " + player.betAmount * 1.5).queue();
+                gameChannel.sendMessage(player.getName() + " hat ein BlackJack! Gewinn: " + player.betAmount * 1.5).queue();
                 wins++;
                 player.chips += player.betAmount * 1.5;
             } else if (dealer.hasBlackJack()) {
-                BLACK_JACK_GAME_CHANNEL.sendMessage(dealer.getName() + " hat ein BlackJack! " + player.getName() + " hat verloren.").queue();
+                gameChannel.sendMessage(dealer.getName() + " hat ein BlackJack! " + player.getName() + " hat verloren.").queue();
                 looses++;
             }
             player.betAmount = 0;
@@ -76,7 +69,7 @@ public class BlackJackGame {
     private void checkForBusts() {
         for (Player player : players)
             if (player.isBust()) {
-                BLACK_JACK_GAME_CHANNEL.sendMessage(player.getName() + " hat sich überkauft und verliert.").queue();
+                gameChannel.sendMessage(player.getName() + " hat sich überkauft und verliert.").queue();
                 looses++;
                 player.betAmount = 0;
                 startRound();
@@ -85,7 +78,7 @@ public class BlackJackGame {
 
     // TODO buttons
     private void makeDecision(Player player) {
-        BLACK_JACK_GAME_CHANNEL.sendMessage("""
+        gameChannel.sendMessage("""
                 1 --> Hit
                 2 --> Stand
                 3 --> Split
@@ -105,14 +98,13 @@ public class BlackJackGame {
     private void hit(Player currentPlayer) {
         boolean hasChosenHitAgain;
         do {
-            BLACK_JACK_GAME_CHANNEL.sendMessage(currentPlayer.getName() + " erhält eine Karte.").queue();
-            printSpace();
+            gameChannel.sendMessage(currentPlayer.getName() + " erhält eine Karte.").queue();
             currentPlayer.hand.drawCard(playingDeck);
             renderCards();
             checkForBlackJacks();
             checkForBusts();
-            BLACK_JACK_GAME_CHANNEL.sendMessage("1 -> Eine weitere Karte?").queue();
-            BLACK_JACK_GAME_CHANNEL.sendMessage("2 -> Keine weitere Karte?").queue();
+            gameChannel.sendMessage("1 -> Eine weitere Karte?").queue();
+            gameChannel.sendMessage("2 -> Keine weitere Karte?").queue();
             int selection =1; // TODO
             hasChosenHitAgain = selection == 1;
         } while (hasChosenHitAgain);
@@ -120,13 +112,13 @@ public class BlackJackGame {
 
     // don't ask for a card
     private void stand(Player currentPlayer) {
-        BLACK_JACK_GAME_CHANNEL.sendMessage(currentPlayer.getName() + " möchte keine weitere Karte.").queue();
+        gameChannel.sendMessage(currentPlayer.getName() + " möchte keine weitere Karte.").queue();
     }
 
     // if you're dealt a pair (2 cards of equal value) you can split the cards.
     private void split(Player currentPlayer) {
         if (!currentPlayer.hand.isPair()) {
-            BLACK_JACK_GAME_CHANNEL.sendMessage("Nur mit einem Paar ist ein Split möglich.").queue();
+            gameChannel.sendMessage("Nur mit einem Paar ist ein Split möglich.").queue();
             return;
         }
         // Each card becomes the first card on two new hands. A second bet becomes possible.
@@ -148,8 +140,7 @@ public class BlackJackGame {
 
     // player gives up and gets half of chips back
     private void surrender(Player player) {
-        BLACK_JACK_GAME_CHANNEL.sendMessage(player.getName() + " gibt auf. Die Hälfte des Einsatzes geht zurück.").queue();
-        printSpace();
+        gameChannel.sendMessage(player.getName() + " gibt auf. Die Hälfte des Einsatzes geht zurück.").queue();
         looses++;
         player.chips += player.betAmount/2;
         player.betAmount=0;
@@ -157,30 +148,23 @@ public class BlackJackGame {
 
     // TODO dc-channel
     private void placeBet(Player currentPlayer) {
-        BLACK_JACK_GAME_CHANNEL.sendMessage(currentPlayer.getName() + " hat "  + currentPlayer.chips + " Chips.").queue();
-        BLACK_JACK_GAME_CHANNEL.sendMessage("Wie hoch ist dein Einsatz?").queue();
-
         EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setTitle("Example Embed");
-        embedBuilder.setColor(Color.RED);
-        embedBuilder.setTimestamp(Instant.now());
-        embedBuilder.addField("Field 1", "This is the first field", false);
-        embedBuilder.addField("Field 2", "This is the second field", false);
+        embedBuilder.setTitle("Auswahl der Einsätze");
+        embedBuilder.addField(currentPlayer.getName(), " ist an der Reihe.", false);
+        embedBuilder.addField("Verfügbare Chips: " + currentPlayer.chips,"Wähle deinen Einsatz.", false);
+        ArrayList<ItemComponent> firstRowOfChips = new ArrayList<>();
+        ArrayList<ItemComponent> secondRowOfChips= new ArrayList<>();
+        for (int coinValue : new int[] { 1, 5, 10, 25, 50})
+            firstRowOfChips.add(Button.primary("btnChip" + coinValue, String.valueOf(coinValue)));
+        for (int coinValue : new int[] { 100, 200, 500, 1000, 5000})
+            secondRowOfChips.add(Button.danger("btnChip" + coinValue, String.valueOf(coinValue)));
 
-        ArrayList<ItemComponent> buttonList = new ArrayList<>();
-        buttonList.add(Button.primary("button1", "Button 1"));
-        buttonList.add(Button.success("button2", "Button 2"));
-        buttonList.add(Button.danger("button3", "Button 3"));
-        BLACK_JACK_GAME_CHANNEL.sendMessageEmbeds(embedBuilder.build()).addActionRow(buttonList).queue();
-
+        gameChannel.sendMessageEmbeds(embedBuilder.build())
+                .addActionRow(firstRowOfChips)
+                .addActionRow(secondRowOfChips).queue();
         int betAmount = 1;
-//        if (betAmount <= 0 || currentPlayer.chips < betAmount) {
-//            System.err.println("Du musst mindestens einen Chip und maximal " + currentPlayer.chips + " Chips setzen.");
-//            placeBet(currentPlayer);
-//        }
         currentPlayer.chips -=betAmount;
         currentPlayer.betAmount = betAmount;
-        printSpace();
     }
 
     private void dealOutStarterHands() {
@@ -198,8 +182,7 @@ public class BlackJackGame {
         for (Player player : players) {
             String name = player.getName();
             int value = player.hand.calculateValue();
-            BLACK_JACK_GAME_CHANNEL.sendMessage(name + "'s Hand: " +  value + " Punkte.\n" + player.hand).queue();
-            printSpace();
+            //BLACK_JACK_GAME_CHANNEL.sendMessage(name + "'s Hand: " +  value + " Punkte.\n" + player.hand).queue();
             for (int index = 0; index < player.hand.getNumberOfCards(); index++) {
                 String rank = player.hand.getCard(index).getRank().toString();
                 String suit = player.hand.getCard(index).getSuit().toString();
@@ -210,18 +193,11 @@ public class BlackJackGame {
 //                    throw new RuntimeException("An error occurred while trying to send the png image.");
 //                }
             }
-            printSpace();
         }
-    }
-
-    private static void printSpace() {
-        for (int printedLines=0; printedLines<2; printedLines++)
-            BLACK_JACK_GAME_CHANNEL.sendMessage("|").queue();
     }
 
     @Override
     public String toString() {
         return "Punktestand: {" + "wins=" + wins + ", looses=" + looses + ", pushes=" + pushes + '}';
     }
-
 }
