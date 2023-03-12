@@ -17,11 +17,11 @@ public class DBHandler {
     private void createNewTable() throws SQLException {
         this.getConnection().createStatement().execute(
                 "CREATE TABLE IF NOT EXISTS users ("
-                        + "	playerId integer PRIMARY KEY NOT NULL,"
-                        + "	games integer default 0 NOT NULL"
-                        + "	wins integer default 0 NOT NULL"
+                        + "playerId integer PRIMARY KEY NOT NULL,"
+                        + "games integer default 0 NOT NULL"
+                        + "wins integer default 0 NOT NULL"
                         + "	defeats integer default 0 NOT NULL"
-                        + "	points integer default 0 NOT NULL"
+                        + "points integer default 0 NOT NULL"
                         + ");"
         );
         // draws can be calculated by games - wins - defeats
