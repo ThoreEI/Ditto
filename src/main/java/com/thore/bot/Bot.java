@@ -19,7 +19,7 @@ public class Bot {
         builder.setActivity(Activity.playing("with you."));
         builder.setMemberCachePolicy(MemberCachePolicy.ALL);
         builder.enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES, GatewayIntent.MESSAGE_CONTENT);
-        builder.addEventListeners(new EventManager(),
+        builder.addEventListeners(
                 new CommandListener(),
                 new MessageListener(),
                 new StateListener(),
