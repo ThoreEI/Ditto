@@ -1,10 +1,9 @@
 package com.thore.bot.io.database;
-
 import java.sql.*;
 import java.util.Set;
 
 public class DBHandler {
-    private static final String DB_URL = "jdbc:sqlite:src/main/resources/db/Ditto.sqlite";
+    private static final String DB_URL = "jdbc:sqlite:src/main/resources/database/playerStats.sqlite";
 
     public DBHandler() throws SQLException {
         createNewTable();
@@ -16,58 +15,62 @@ public class DBHandler {
 
     private void createNewTable() throws SQLException {
         this.getConnection().createStatement().execute(
-                "CREATE TABLE IF NOT EXISTS users ("
-                        + "playerId integer PRIMARY KEY NOT NULL,"
-                        + "games integer default 0 NOT NULL"
-                        + "wins integer default 0 NOT NULL"
-                        + "	defeats integer default 0 NOT NULL"
-                        + "points integer default 0 NOT NULL"
+                "CREATE TABLE IF NOT EXISTS t_player ("
+                        + "playerID integer PRIMARY KEY NOT NULL,"
+                        + "coins INTEGER DEFAULT 0 NOT NULL,"
+                        + "games INTEGER DEFAULT 0 NOT NULL,"
+                        + "wins INTEGER DEFAULT 0 NOT NULL,"
+                        + "pushes INTEGER DEFAULT 0 NOT NULL,"
+                        + "defeats INTEGER DEFAULT 0 NOT NULL"
                         + ");"
         );
         // draws can be calculated by games - wins - defeats
     }
 
-    public boolean playerExists(int playerId) throws SQLException {
+    public boolean playerExists(int playerID) throws SQLException {
         ResultSet rs = this.getConnection().createStatement().executeQuery(
-                "SELECT playerId FROM users WHERE playerId = " + playerId + ";"
+                "SELECT playerID FROM t_player WHERE playerID = " + playerID + ";"
         );
         return rs.next();
     }
 
-    public void insertNewPlayer(int playerId) throws SQLException {
+    public void insertNewPlayer(int playerID) throws SQLException {
         this.getConnection().createStatement().execute(
-                "INSERT INTO users (playerId) VALUES (" + playerId + ");"
+                "INSERT INTO t_player (playerID) VALUES (" + playerID + ");"
         );
     }
 
-    public void updatePlayerPoints(int playerId, int points) throws SQLException {
+    public void updatePlayerPoints(int playerID, int points) throws SQLException {
         this.getConnection().createStatement().execute(
-                "UPDATE users SET points = " + points + " WHERE playerId = " + playerId + ";"
+                "UPDATE t_player SET points = " + points + " WHERE playerID = " + playerID + ";"
         );
     }
 
-    private void addGame(int playerId, String value) throws SQLException {
+    private void addGame(int playerID, String value) throws SQLException {
         if (Set.of("wins", "defeats").contains(value)) {
             this.getConnection().createStatement().execute(
-                    "UPDATE users SET " + value + " = " + value + " + 1, games = games +1 WHERE playerId = " + playerId + ";"
+                    "UPDATE t_player SET " + value + " = " + value + " + 1, games = games +1 WHERE playerID= " + playerID + ";"
             );
         } else { // draw
             this.getConnection().createStatement().execute(
-                    "UPDATE users SET games = games +1 WHERE playerId = " + playerId + ";"
+                    "UPDATE t_player SET games=games+1 WHERE playerID = " + playerID + ";"
             );
         }
     }
 
-    public void addWin(int playerId) throws SQLException {
-        addGame(playerId, "wins");
+    public void addWin(int playerID) throws SQLException {
+        addGame(playerID, "wins");
     }
 
-    public void addDefeat(int playerId) throws SQLException {
-        addGame(playerId, "defeats");
+    public void addDefeat(int playerID) throws SQLException {
+        addGame(playerID, "defeats");
     }
 
-    public void addDraw(int playerId) throws SQLException {
-        addGame(playerId, "draws");
+    public void addPush(int playerID) throws SQLException {
+        addGame(playerID, "push's");
     }
 
+    public static void main(String[] args) throws SQLException {
+        new DBHandler();
+    }
 }

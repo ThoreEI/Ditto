@@ -38,3 +38,5 @@ build/
 /.idea/
 /.env
 /src/main/java/com/thore/bot/io/files/
+/src/main/resources/database/playerStats.sqlite
+/identifier.sqlite

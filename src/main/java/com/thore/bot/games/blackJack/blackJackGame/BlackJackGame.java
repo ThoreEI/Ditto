@@ -12,7 +12,7 @@ public class BlackJackGame {
     public static ArrayList<Player> players;
     private static Deck playingDeck;
     private static Dealer dealer;
-    private int wins, looses, pushes;
+    private int wins, defeats, pushes;
 
     public BlackJackGame(User user) {
         buildDeck();
@@ -57,7 +57,7 @@ public class BlackJackGame {
                 player.chips += player.hand.betAmount * 1.5;
             } else if (dealer.hasBlackJack()) {
                 getBlackJackGameChannel().sendMessage(dealer.getName() + " hat ein BlackJack! " + player.getName() + " hat verloren.").queue();
-                looses++;
+                defeats++;
             }
             player.betAmount = 0;
             startRound();
@@ -67,7 +67,7 @@ public class BlackJackGame {
         for (Player player : players)
             if (player.isBust()) {
                 getBlackJackGameChannel().sendMessage(player.getName() + " hat sich überkauft und verliert.").queue();
-                looses++;
+                defeats++;
                 player.betAmount = 0;
                 startRound();
             }
@@ -138,7 +138,7 @@ public class BlackJackGame {
     // player gives up and gets half of chips back
     private void surrender(Player player) {
         getBlackJackGameChannel().sendMessage(player.getName() + " gibt auf. Die Hälfte des Einsatzes geht zurück.").queue();
-        looses++;
+        defeats++;
         player.chips += player.betAmount/2;
         player.betAmount=0;
     }
@@ -190,6 +190,6 @@ public class BlackJackGame {
 
     @Override
     public String toString() {
-        return "Punktestand: {" + "wins=" + wins + ", looses=" + looses + ", pushes=" + pushes + '}';
+        return "Punktestand: {" + "wins=" + wins + ", looses=" + defeats + ", pushes=" + pushes + '}';
     }
 }
