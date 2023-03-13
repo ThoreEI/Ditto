@@ -1,14 +1,15 @@
 package com.thore.bot.games.blackJack.blackJackGame;
 import com.thore.bot.games.blackJack.domain.*;
+import com.thore.bot.io.reader.FileReader;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.interactions.components.ItemComponent;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.utils.FileUpload;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import static com.thore.bot.channel.ChannelManager.getBlackJackGameChannel;
-
 
 public class BlackJackGame {
     public static ArrayList<Player> players;
@@ -182,11 +183,16 @@ public class BlackJackGame {
             String name = player.getName();
             int value = player.hand.calculateValue();
             for (int index = 0; index < player.hand.getNumberOfCards(); index++) {
-                String rank = player.hand.getCard(index).getRank().getRankName();
-                String suit = player.hand.getCard(index).getSuit().getSuitName();
-                String filename = rank + suit + ".png";
-                File pngCard = new File("com/thore/bot/io/files/pngFiles/" + filename);
-                getBlackJackGameChannel().sendFiles(FileUpload.fromData(pngCard)).queue();
+                Suit suit = player.hand.getCard(index).getSuit();
+                Rank rank = player.hand.getCard(index).getRank();
+                File pngFile = null;
+                try {
+                    pngFile = FileReader.loadCard(suit, rank);
+                } catch (IOException e) {
+                    System.err.println("An error occurred while reading the png file.");
+                }
+                assert pngFile != null;
+                getBlackJackGameChannel().sendFiles(FileUpload.fromData(pngFile)).queue();
             }
         }
     }
