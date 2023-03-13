@@ -28,8 +28,8 @@ public class FileReader  {
         return jokes[new Random().nextInt(jokes.length)];
     }
 
-    public static String getPathOfCard(String nameOfCard) {
-        return PATH_CARDS_PNG + nameOfCard +".png";
+    public static String getPathOfCard(String cardDescription) {
+        return PATH_CARDS_PNG + cardDescription +".png";
     }
 }
 

@@ -203,22 +203,26 @@ public class BlackJackGame {
         builder = new EmbedBuilder();
         builder.setTitle(player.getName() + "'s Hand");
         builder.setDescription("Punkte: "+ player.hand.calculateValue());
-        MessageEmbed messageEmbed = builder.build();
-
-        MessageCreateBuilder messageBuilder = new MessageCreateBuilder();
-        messageBuilder.setEmbeds(messageEmbed);
-
-        EmbedBuilder imageBuilder = new EmbedBuilder();
-
-
+//        File pngFile1= new File("path_to_first_image");
+//        InputStream firstImageStream = new FileInputStream(firstImageFile);
+//        builder.setImage(firstImageStream, "first_image.png");
+//        File secondImageFile = new File("path_to_second_image");
+//        InputStream secondImageStream = new FileInputStream(secondImageFile);
+//        builder.setThumbnail(secondImageStream, "second_image.png");
+//        MessageEmbed embed = builder.build();
+//        channel.sendMessage(embed).queue();
         for (int index = 0; index < player.hand.getNumberOfCards(); index++) {
+            MessageEmbed messageEmbed = builder.build();
+            MessageCreateBuilder messageBuilder = new MessageCreateBuilder();
+            messageBuilder.setEmbeds(messageEmbed);
+            EmbedBuilder imageBuilder = new EmbedBuilder();
             String cardDescription = player.hand.getCard(index).getCardDescription();
             String pathOfCard = FileReader.getPathOfCard(cardDescription);
             imageBuilder.setImage(pathOfCard);
             messageBuilder.setEmbeds(imageBuilder.build());
-            getBlackJackGameChannel()
-                    .sendMessage(messageBuilder.build()).addFiles(messageBuilder.getAttachments());
-//                    addFiles(FileUpload.fromData(pngFile)).queue();
+            getBlackJackGameChannel().sendMessage(messageBuilder.build())
+                    .addFiles(FileUpload.fromData(new File(pathOfCard)))
+                    .queue();
         }
     }
 }
