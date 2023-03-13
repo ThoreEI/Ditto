@@ -31,10 +31,10 @@ public class DatabaseHandler {
     }
 
     public boolean playerExists(long playerID) throws SQLException {
-        ResultSet rs = this.getConnection().createStatement().executeQuery(
+        ResultSet resultSet = this.getConnection().createStatement().executeQuery(
                 "SELECT PlayerID FROM t_blackJackPlayer WHERE PlayerID = " + playerID + ";"
         );
-        return rs.next();
+        return resultSet.next();
     }
 
     public void insertNewPlayer(User player) throws SQLException {
@@ -70,10 +70,6 @@ public class DatabaseHandler {
     }
 
     public void addPush(int playerID) throws SQLException {
-        addGame(playerID, "push's");
-    }
-
-    public static void main(String[] args) throws SQLException {
-        new DatabaseHandler();
+        addGame(playerID, "pushes");
     }
 }
