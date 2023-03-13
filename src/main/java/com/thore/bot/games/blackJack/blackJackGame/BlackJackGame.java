@@ -7,72 +7,83 @@ import net.dv8tion.jda.api.interactions.components.ItemComponent;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.utils.FileUpload;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import static com.thore.bot.channel.ChannelManager.getBlackJackGameChannel;
+import static com.thore.bot.IDHandler.getBlackJackGameChannel;
 
 public class BlackJackGame {
-    public static ArrayList<Player> players;
+    public static ArrayList<Player> listOfPlayers;
     private static Deck playingDeck;
     private static Dealer dealer;
-    private int wins, defeats, pushes;
 
-    public BlackJackGame(User user) {
-        buildDeck();
-        createUser(user.getName());
+    public BlackJackGame(User... players) {
+        dealer = new Dealer();
+        playingDeck = new Deck();
+        listOfPlayers = new ArrayList<>();
+        for (User user : players)
+            createUser(user.getName());
         startRound();
     }
 
-    private void buildDeck() {
-        playingDeck = new Deck();
-        playingDeck.shuffle();
-    }
-
     private void createUser(String username) {
-        BlackJackGame.players = new ArrayList<>();
-        players.add(new Player(username));
-        dealer = new Dealer();
+        listOfPlayers.add(new Player(username));
     }
 
     public void startRound() {
-        // TODO condition
+        for (Player player : listOfPlayers) {
+            placeBet(player);
+            dealOutPlayersHand(player);
+        }
+        dealOutDealersHand();
         //while (true) {
-            for (Player player : players)
-                placeBet(player);
-            dealOutStarterHands();
-            renderCards();
-            checkForBlackJacks();
-            for (Player player : players)
-                makeDecision(player);
-            checkForBusts();
-     //   }
+        for (Player player : listOfPlayers)
+            renderCards(player);
+        checkForBlackJacks();
+        for (Player player : listOfPlayers)
+            makeDecision(player);
+        checkForBusts();
+        // }
+    }
+
+    // Players are dealt two cards face up on the field.
+    private void dealOutPlayersHand(Player player) {
+        player.hand.drawCard(playingDeck);
+        player.hand.drawCard(playingDeck);
+    }
+
+    // The dealer also receives two cards. One is face down on the field.
+    private void dealOutDealersHand() {
+        dealer.hand.drawCard(playingDeck);
+        dealer.hand.drawCard(playingDeck);
     }
 
     private void checkForBlackJacks() {
-        for (Player player : players) {
-            if (player.hasBlackJack() && dealer.hasBlackJack()) {
+        for (Player player : listOfPlayers) {
+            if (!player.hasBlackJack() && !dealer.hasBlackJack())
+                return;
+            else if (player.hasBlackJack()) {
+                player.chips += player.betAmount * 1.5;
+                getBlackJackGameChannel().sendMessage(player.getName() + " hat ein BlackJack! Gewinn: " + player.betAmount * 1.5).queue();
+                player.incrementWins();
+            } else if (player.hasBlackJack() && dealer.hasBlackJack()) {
+                player.chips += player.betAmount;
                 getBlackJackGameChannel().sendMessage("Unentschieden. " + player.getName() + " erhält seinen Einsatz zurück.").queue();
-                pushes++;
-                player.chips += player.hand.betAmount;
-            } else if (player.hasBlackJack()) {
-                getBlackJackGameChannel().sendMessage(player.getName() + " hat ein BlackJack! Gewinn: " + player.hand.betAmount * 1.5).queue();
-                wins++;
-                player.chips += player.hand.betAmount * 1.5;
+                player.incrementPushes();
             } else if (dealer.hasBlackJack()) {
                 getBlackJackGameChannel().sendMessage(dealer.getName() + " hat ein BlackJack! " + player.getName() + " hat verloren.").queue();
-                defeats++;
+               player.incrementLooses();
             }
             player.betAmount = 0;
+
             //startRound(); TODO
         }
     }
     private void checkForBusts() {
-        for (Player player : players)
+        for (Player player : listOfPlayers)
             if (player.isBust()) {
                 getBlackJackGameChannel().sendMessage(player.getName() + " hat sich überkauft und verliert.").queue();
-                defeats++;
+                player.incrementLooses();
                 player.betAmount = 0;
-              //  startRound(); TODO
+                //  startRound(); TODO
             }
     }
 
@@ -84,7 +95,7 @@ public class BlackJackGame {
                 3 --> Split
                 4 --> Double down
                 5 --> Surrender""").queue();
-        int decision = 1;  // TODO
+        int decision = 2;  // TODO
         switch (decision) {
             case 1 -> hit(player);
             case 2 -> stand(player);
@@ -100,7 +111,7 @@ public class BlackJackGame {
         do {
             getBlackJackGameChannel().sendMessage(currentPlayer.getName() + " erhält eine Karte.").queue();
             currentPlayer.hand.drawCard(playingDeck);
-            renderCards();
+            renderCards(currentPlayer);
             checkForBlackJacks();
             checkForBusts();
             getBlackJackGameChannel().sendMessage("1 -> Eine weitere Karte?").queue();
@@ -134,24 +145,25 @@ public class BlackJackGame {
         // TODO bet is possible
     }
 
-    private void doubleDown(Player currentPlayer) {
+    private void doubleDown(Player player) {
+        System.out.println(" ");
         // TODO
     }
 
     // player gives up and gets half of chips back
     private void surrender(Player player) {
         getBlackJackGameChannel().sendMessage(player.getName() + " gibt auf. Die Hälfte des Einsatzes geht zurück.").queue();
-        defeats++;
+        player.incrementLooses();
         player.chips += player.betAmount/2;
         player.betAmount=0;
     }
 
     // TODO dc-channel
-    private void placeBet(Player currentPlayer) {
+    private void placeBet(Player player) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
         embedBuilder.setTitle("Auswahl der Einsätze");
-        embedBuilder.addField(currentPlayer.getName(), " ist an der Reihe.", false);
-        embedBuilder.addField("Verfügbare Chips: " + currentPlayer.chips,"Wähle deinen Einsatz.", false);
+        embedBuilder.addField(player.getName(), " ist an der Reihe.", false);
+        embedBuilder.addField("Verfügbare Chips: " + player.chips,"Wähle deinen Einsatz.", false);
         ArrayList<ItemComponent> firstRowOfChips = new ArrayList<>();
         ArrayList<ItemComponent> secondRowOfChips= new ArrayList<>();
         for (int coinValue : new int[] { 1, 5, 10, 25, 50})
@@ -162,47 +174,22 @@ public class BlackJackGame {
                 .addActionRow(firstRowOfChips)
                 .addActionRow(secondRowOfChips).queue();
         int betAmount = 1;
-        currentPlayer.chips -=betAmount;
-        currentPlayer.betAmount = betAmount;
+        if (player.chips > betAmount)
+            player.chips -= betAmount;
+        player.betAmount = betAmount;
     }
 
-    private void dealOutStarterHands() {
-        // Players are dealt two cards face up on the field.
-        for (Player player : players) {
-            player.hand.drawCard(playingDeck);
-            player.hand.drawCard(playingDeck);
+    public void renderCards(Player player) {
+        int value = player.hand.calculateValue();
+        getBlackJackGameChannel().sendMessage("Spieler: " + player.getName()).queue();
+        Suit suit;
+        Rank rank;
+        for (int index = 0; index < player.hand.getNumberOfCards(); index++) {
+            suit = player.hand.getCard(index).suit();
+            rank = player.hand.getCard(index).rank();
+            File pngFile = FileReader.loadCard(suit, rank);
+            getBlackJackGameChannel().sendMessage("Punkte: " + value)
+                    .addFiles(FileUpload.fromData(pngFile)).queue();
         }
-        // The dealer also receives two cards. One is face down on the field.
-        dealer.hand.drawCard(playingDeck);
-        dealer.hand.drawCard(playingDeck);
-    }
-
-    public void renderCards() {
-        for (Player player : players) {
-            String name = player.getName();
-            int value = player.hand.calculateValue();
-            Suit suit;
-            Rank rank;
-            for (int index = 0; index < player.hand.getNumberOfCards(); index++) {
-                suit = player.hand.getCard(index).getSuit();
-                rank = player.hand.getCard(index).getRank();
-
-                File pngFile = null;
-                try {
-                    assert suit != null;
-                    pngFile = FileReader.loadCard(suit, rank);
-                } catch (IOException e) {
-                    System.err.println("An error occurred while reading the png file.");
-                }
-                assert pngFile != null;
-                getBlackJackGameChannel().sendMessage("Name: " + name + "\n" + "Punkte: " + value)
-                        .addFiles(FileUpload.fromData(pngFile)).queue();
-            }
-        }
-    }
-
-    @Override
-    public String toString() {
-        return "Punktestand: {" + "wins=" + wins + ", looses=" + defeats + ", pushes=" + pushes + '}';
     }
 }
