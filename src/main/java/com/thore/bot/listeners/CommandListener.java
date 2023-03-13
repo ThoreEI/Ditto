@@ -22,17 +22,20 @@ public class CommandListener extends ListenerAdapter {
             event.reply(FileReader.loadJoke()).queue();
 
         else if (event.getName().equals("blackjack") && isBlackJackChannel(event.getChannel())) {
-            Category blackjack = Objects.requireNonNull(
-                    event.getGuild())
-                    .getCategoriesByName("blackjack", true)
-                    .get(0);
-            TextChannel temporaryChannel = blackjack.createTextChannel("Black Jack Game " + blackjack.getChannels().size())
-                    .setTopic("This is a temporary Black Jack channel.")
-                    .complete();
+//            Category blackJackCategory = Objects.requireNonNull(event.getGuild())
+//                    .getCategoriesByName("blackjack", true)
+//                    .get(0);
+//            TextChannel temporaryChannel = blackJackCategory.createTextChannel("Black Jack Game " + blackJackCategory.getChannels().size())
+//                    .setTopic("Das ist ein temporärer Black Jack Channel.")
+//                    .complete();
+//                    new BlackJackGame(temporaryChannel);
+        } else if (event.getName().equals("join") && isBlackJackChannel(event.getChannel())) {  // TODO child channel
+            String username = event.getUser().getName();
+            BlackJackGame.players.add(new Player(username));
+            event.getChannel().sendMessage(username + " wurde der Spielerliste hinzugefügt.").queue();
+        }  else if (event.getName().equals("start") && isBlackJackChannel(event.getChannel())) {
             event.reply("Blackjack is starting...").queue();
-            new BlackJackGame(temporaryChannel);
-        } else if (event.getName().equals("join") && isBlackJackChannel(event.getChannel()))
-            BlackJackGame.players.add(new Player(event.getUser().getName()));
+        }
         System.out.println();
     }
 }

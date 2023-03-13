@@ -1,6 +1,8 @@
 package com.thore.bot.games.blackJack.blackJackGame;
+import com.thore.bot.Bot;
 import com.thore.bot.games.blackJack.domain.*;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.channel.Channel;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.interactions.components.ItemComponent;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
@@ -9,13 +11,13 @@ import java.util.ArrayList;
 
 public class BlackJackGame {
     public static ArrayList<Player> players;
-    private static TextChannel gameChannel;
+    private TextChannel gameChannel;
     private static Deck playingDeck;
     private static Dealer dealer;
     private int wins, looses, pushes;
 
-    public BlackJackGame(TextChannel textChannel) {
-        gameChannel = textChannel;
+    public BlackJackGame(/*TextChannel textChannel*/) {
+        String blackJackGame = Bot.getConfig().get("BLACK_JACK_GAME_ID");
         buildDeck();
         createUser();
     }
