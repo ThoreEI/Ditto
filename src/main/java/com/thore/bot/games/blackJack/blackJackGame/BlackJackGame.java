@@ -36,7 +36,7 @@ public class BlackJackGame {
 
     public void startRound() {
         // TODO condition
-        while (true) {
+        //while (true) {
             for (Player player : players)
                 placeBet(player);
             dealOutStarterHands();
@@ -45,7 +45,7 @@ public class BlackJackGame {
             for (Player player : players)
                 makeDecision(player);
             checkForBusts();
-        }
+     //   }
     }
 
     private void checkForBlackJacks() {
@@ -63,7 +63,7 @@ public class BlackJackGame {
                 defeats++;
             }
             player.betAmount = 0;
-            startRound();
+            //startRound(); TODO
         }
     }
     private void checkForBusts() {
@@ -72,7 +72,7 @@ public class BlackJackGame {
                 getBlackJackGameChannel().sendMessage(player.getName() + " hat sich überkauft und verliert.").queue();
                 defeats++;
                 player.betAmount = 0;
-                startRound();
+              //  startRound(); TODO
             }
     }
 
@@ -84,7 +84,7 @@ public class BlackJackGame {
                 3 --> Split
                 4 --> Double down
                 5 --> Surrender""").queue();
-        int decision = 2;  // TODO
+        int decision = 1;  // TODO
         switch (decision) {
             case 1 -> hit(player);
             case 2 -> stand(player);
@@ -158,7 +158,6 @@ public class BlackJackGame {
             firstRowOfChips.add(Button.primary("btnChip" + coinValue, String.valueOf(coinValue)));
         for (int coinValue : new int[] {100, 200, 500, 1000, 5000})
             secondRowOfChips.add(Button.danger("btnChip" + coinValue, String.valueOf(coinValue)));
-
         getBlackJackGameChannel().sendMessageEmbeds(embedBuilder.build())
                 .addActionRow(firstRowOfChips)
                 .addActionRow(secondRowOfChips).queue();
@@ -182,17 +181,22 @@ public class BlackJackGame {
         for (Player player : players) {
             String name = player.getName();
             int value = player.hand.calculateValue();
+            Suit suit;
+            Rank rank;
             for (int index = 0; index < player.hand.getNumberOfCards(); index++) {
-                Suit suit = player.hand.getCard(index).getSuit();
-                Rank rank = player.hand.getCard(index).getRank();
+                suit = player.hand.getCard(index).getSuit();
+                rank = player.hand.getCard(index).getRank();
+
                 File pngFile = null;
                 try {
+                    assert suit != null;
                     pngFile = FileReader.loadCard(suit, rank);
                 } catch (IOException e) {
                     System.err.println("An error occurred while reading the png file.");
                 }
                 assert pngFile != null;
-                getBlackJackGameChannel().sendFiles(FileUpload.fromData(pngFile)).queue();
+                getBlackJackGameChannel().sendMessage("Name: " + name + "\n" + "Punkte: " + value)
+                        .addFiles(FileUpload.fromData(pngFile)).queue();
             }
         }
     }

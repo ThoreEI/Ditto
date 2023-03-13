@@ -9,11 +9,6 @@ public class Card implements Comparable<Card> {
         this.rank = rank;
     }
 
-//    public Card (Card toCopy) {
-//        this.suit = toCopy.getSuit();
-//        this.rank = toCopy.getRank();
-//    }
-
     @Override
     public int compareTo(Card card) {
         return this.getValue() - card.getValue(); // TODO testen
@@ -29,10 +24,5 @@ public class Card implements Comparable<Card> {
 
     public Rank getRank() {
         return rank;
-    }
-
-    @Override
-    public String toString() {
-        return ("[" + rank + " of " + suit + "] (" + this.getValue() + ")");
     }
 }
