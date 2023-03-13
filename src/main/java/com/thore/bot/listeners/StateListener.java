@@ -16,8 +16,6 @@ public class StateListener extends ListenerAdapter {
         ArrayList<CommandData> commandDataList = new ArrayList<>();
         commandDataList.add(Commands.slash("joke", "Witz gefällig?"));
         commandDataList.add(Commands.slash("blackjack", "Spiele Black Jack mit Freunden."));
-        commandDataList.add(Commands.slash("join", "Trete dem aktuellen Black Jack Spiel bei."));
-        commandDataList.add(Commands.slash("start", "Starte das Black Jack Spiel."));
         event.getGuild().updateCommands().addCommands(commandDataList).queue();
     }
 
