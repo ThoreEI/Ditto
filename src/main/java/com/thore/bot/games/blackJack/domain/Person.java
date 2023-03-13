@@ -4,7 +4,7 @@ public abstract class Person {
     private final String name;
     public Hand hand;
 
-    public Person(String name) {  // TODO name von discord
+    public Person(String name) {
         this.name= name;
         this.hand=new Hand();
     }
@@ -22,5 +22,4 @@ public abstract class Person {
     public String getName() {
         return name;
     }
-
 }

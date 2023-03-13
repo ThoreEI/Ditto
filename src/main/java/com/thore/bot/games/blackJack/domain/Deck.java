@@ -19,7 +19,7 @@ public class Deck {
         shuffle();
     }
 
-    public void shuffle() {
+    private static void shuffle() {
         Collections.shuffle(deck, new Random());
     }
 
@@ -29,7 +29,7 @@ public class Deck {
 
     public void replenishWithCards(Deck discardedDeck) {
         this.addCards(discardedDeck.getDeck());
-        this.shuffle();
+        shuffle();
         discardedDeck.emptyDeck();
     }
 
@@ -44,8 +44,6 @@ public class Deck {
         return getDeck().remove(0);
     }
 
-
-
     public boolean isEmpty() {
         return deck.size()==0;
     }
@@ -54,11 +52,11 @@ public class Deck {
         return deck;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder output = new StringBuilder();
-        for (Card card: deck)
-            output.append(card).append("\n");
-        return output.toString();
-    }
+//    @Override
+//    public String toString() {
+//        StringBuilder output = new StringBuilder();
+//        for (Card card: deck)
+//            output.append(card).append("\n");
+//        return output.toString();
+//    }
 }

@@ -1,13 +1,6 @@
 package com.thore.bot.games.blackJack.domain;
 
-public class Card implements Comparable<Card> {
-    private final Suit suit;
-    private final Rank rank;
-
-    public Card(Suit suit, Rank rank) {
-        this.suit = suit;
-        this.rank = rank;
-    }
+public record Card(Suit suit, Rank rank) implements Comparable<Card> {
 
     @Override
     public int compareTo(Card card) {
@@ -16,13 +9,5 @@ public class Card implements Comparable<Card> {
 
     public int getValue() {
         return rank.getRankValue();
-    }
-
-    public Suit getSuit() {
-        return suit;
-    }
-
-    public Rank getRank() {
-        return rank;
     }
 }
