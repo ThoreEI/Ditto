@@ -1,4 +1,4 @@
-package com.thore.bot.channels;
+package com.thore.bot.channel;
 import com.thore.bot.Bot;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 
