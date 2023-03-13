@@ -18,7 +18,7 @@ public class CommandListener extends ListenerAdapter  {
             event.reply(FileReader.loadJoke()).queue();
         else if (event.getName().equals("blackjack") && isBlackJackChannel(event.getChannel())) {
             event.reply("Herzlich Willkommen zum Black Jack!").queue();
-            new BlackJackGame(event.getUser());
+            new BlackJackGame(event.getUser());  // TODO multiple players
         }
     }
 }

@@ -23,7 +23,6 @@ public class Hand {
         hand.add(deck.drawCard());
     }
 
-
     public void shuffleHandIntoDeck(Deck deck) {
         deck.addCards(hand);
         hand.clear();

@@ -52,11 +52,4 @@ public class Deck {
         return deck;
     }
 
-//    @Override
-//    public String toString() {
-//        StringBuilder output = new StringBuilder();
-//        for (Card card: deck)
-//            output.append(card).append("\n");
-//        return output.toString();
-//    }
 }
