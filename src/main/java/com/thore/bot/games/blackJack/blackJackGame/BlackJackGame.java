@@ -4,8 +4,10 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.interactions.components.ItemComponent;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.utils.FileUpload;
+import java.io.File;
 import java.util.ArrayList;
-import static com.thore.bot.channels.ChannelManager.getBlackJackGameChannel;
+import static com.thore.bot.channel.ChannelManager.getBlackJackGameChannel;
 
 
 public class BlackJackGame {
@@ -183,7 +185,8 @@ public class BlackJackGame {
                 String rank = player.hand.getCard(index).getRank().getRankName();
                 String suit = player.hand.getCard(index).getSuit().getSuitName();
                 String filename = rank + suit + ".png";
-             // TODO
+                File pngCard = new File("com/thore/bot/io/files/pngFiles/" + filename);
+                getBlackJackGameChannel().sendFiles(FileUpload.fromData(pngCard)).queue();
             }
         }
     }
