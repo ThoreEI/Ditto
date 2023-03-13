@@ -1,5 +1,7 @@
 package com.thore.bot.listeners;
 
+import net.dv8tion.jda.api.entities.Message;
+import com.thore.bot.games.blackJack.domain.Player;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -8,6 +10,10 @@ import java.util.Objects;
 import static com.thore.bot.IDVerifier.isBlackJackChannel;
 
 public class ButtonListener extends ListenerAdapter {
+
+    public ButtonListener(Player player, Message message) {
+
+    }
 
     @Override
     public void onButtonInteraction(ButtonInteractionEvent event) {

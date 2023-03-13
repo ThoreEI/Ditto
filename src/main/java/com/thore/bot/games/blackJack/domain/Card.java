@@ -10,4 +10,8 @@ public record Card(Suit suit, Rank rank) implements Comparable<Card> {
     public int getValue() {
         return rank.getRankValue();
     }
+
+    public String getCardDescription() {
+        return rank.getRankName() + suit.getSuitName();
+    }
 }

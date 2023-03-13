@@ -28,9 +28,8 @@ public class FileReader  {
         return jokes[new Random().nextInt(jokes.length)];
     }
 
-    public static File loadCard(Suit suit, Rank rank) {
-        String filename = rank.getRankName() + suit.getSuitName() + ".png";
-        return new File(PATH_CARDS_PNG + filename);
+    public static String getPathOfCard(String nameOfCard) {
+        return PATH_CARDS_PNG + nameOfCard +".png";
     }
 }
 

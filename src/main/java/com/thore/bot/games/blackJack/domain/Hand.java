@@ -56,6 +56,7 @@ public class Hand {
         StringBuilder stringBuilder = new StringBuilder();
         for (Card card : hand)
             stringBuilder.append(card.toString()).append("\n");
+        ;
         return stringBuilder.toString();
     }
 }

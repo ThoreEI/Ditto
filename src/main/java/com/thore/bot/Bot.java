@@ -23,8 +23,7 @@ public class Bot {
                 new CommandListener(),
                 new MessageListener(),
                 new StateListener(),
-                new ReactionListener(),
-                new ButtonListener());
+                new ReactionListener());
         jda = builder.build();
         try {
             jda.awaitReady();
