@@ -39,4 +39,5 @@ public class Bot {
     public static Dotenv getConfig () {
         return config;
     }
+
 }

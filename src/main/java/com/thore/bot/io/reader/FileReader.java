@@ -29,7 +29,11 @@ public class FileReader  {
     }
 
     public static String getPathOfCard(String cardDescription) {
-        return PATH_CARDS_PNG + cardDescription +".png";
+        return PATH_CARDS_PNG + cardDescription + ".png";
+    }
+
+    public static File loadCard(String cardDescription) {
+        return new File(PATH_CARDS_PNG + cardDescription + ".png");
     }
 }
 

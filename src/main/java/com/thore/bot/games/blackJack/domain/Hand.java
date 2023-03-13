@@ -33,7 +33,7 @@ public class Hand {
         int numberOfAces = 0;
         for (Card card : this.hand) {
             value += card.getValue();
-            if (card.getValue() == 11)
+            if (card.rank().getRankName().equals("Ace"))
                 numberOfAces++;
         }
         while (numberOfAces > 0 && value > 21) {

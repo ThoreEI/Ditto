@@ -83,7 +83,6 @@ public class BlackJackGame {
                 player.incrementLooses();
             }
             player.betAmount = 0;
-
             //startRound(); TODO
         }
     }
@@ -212,16 +211,10 @@ public class BlackJackGame {
 //        MessageEmbed embed = builder.build();
 //        channel.sendMessage(embed).queue();
         for (int index = 0; index < player.hand.getNumberOfCards(); index++) {
-            MessageEmbed messageEmbed = builder.build();
-            MessageCreateBuilder messageBuilder = new MessageCreateBuilder();
-            messageBuilder.setEmbeds(messageEmbed);
-            EmbedBuilder imageBuilder = new EmbedBuilder();
             String cardDescription = player.hand.getCard(index).getCardDescription();
-            String pathOfCard = FileReader.getPathOfCard(cardDescription);
-            imageBuilder.setImage(pathOfCard);
-            messageBuilder.setEmbeds(imageBuilder.build());
-            getBlackJackGameChannel().sendMessage(messageBuilder.build())
-                    .addFiles(FileUpload.fromData(new File(pathOfCard)))
+            File pngFile = FileReader.loadCard(cardDescription); //getPathOfCard(cardDescription);
+            getBlackJackGameChannel().sendMessageEmbeds(builder.build())
+                    .addFiles(FileUpload.fromData(pngFile))
                     .queue();
         }
     }
