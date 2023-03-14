@@ -13,7 +13,7 @@ public class Player extends Person {
         this.wins = 0;
         this.looses = 0;
         this.pushes = 0;
-        this.secondHand = null; // TODO  solution without null
+        this.secondHand = null;  // TODO  solution without null
     }
 
     public void incrementWins() {

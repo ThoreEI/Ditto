@@ -2,36 +2,32 @@ package com.thore.bot.games.blackJack.domain;
 import java.util.ArrayList;
 
 public class Hand {
-    private final ArrayList<Card> hand;
 
 
+    private final ArrayList<Card> cards;
     public Hand() {
-        hand = new ArrayList<>();
+        cards = new ArrayList<>();
     }
 
     public Hand(Card card1, Card card2) {
-        hand = new ArrayList<>();
-        hand.add(card1);
-        hand.add(card2);
+        cards = new ArrayList<>();
+        cards.add(card1);
+        cards.add(card2);
     }
 
     public Card getCard(int index) {
-        return hand.get(index);
+        return cards.get(index);
     }
 
     public void drawCard(Deck deck) {
-        hand.add(deck.drawCard());
+        cards.add(deck.drawCard());
     }
 
-    public void shuffleHandIntoDeck(Deck deck) {
-        deck.addCards(hand);
-        hand.clear();
-    }
 
     public int calculateValue() {
         int value = 0;
         int numberOfAces = 0;
-        for (Card card : this.hand) {
+        for (Card card : this.cards) {
             value += card.getValue();
             if (card.rank().getRankName().equals("Ace"))
                 numberOfAces++;
@@ -44,17 +40,17 @@ public class Hand {
     }
 
     public boolean isPair() {
-        return hand.size() == 2 && getCard(0).getValue() == getCard(1).getValue();
+        return cards.size() == 2 && getCard(0).getValue() == getCard(1).getValue();
     }
 
-    public int getNumberOfCards() {
-        return hand.size();
+    public ArrayList<Card> getCards() {
+        return cards;
     }
 
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        for (Card card : hand)
+        for (Card card : cards)
             stringBuilder.append(card.toString()).append("\n");
         return stringBuilder.toString();
     }

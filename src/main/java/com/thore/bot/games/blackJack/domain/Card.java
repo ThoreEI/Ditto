@@ -4,7 +4,7 @@ public record Card(Suit suit, Rank rank) implements Comparable<Card> {
 
     @Override
     public int compareTo(Card card) {
-        return this.getValue() - card.getValue(); // TODO testen
+        return this.getValue() - card.getValue(); // TODO testing
     }
 
     public int getValue() {

@@ -18,55 +18,69 @@ import java.util.List;
 import static com.thore.bot.IDHandler.getBlackJackGameChannel;
 
 public class BlackJackGame {
-    public static ArrayList<Player> listOfPlayers;
-    private static Deck playingDeck;
+    public static ArrayList<Player> players;
+    private static Deck deck, discardPile;
     private static Dealer dealer;
-    private static EmbedBuilder builder;
+    private static EmbedBuilder betFrame, decisionFrame, scoreFrame, cardFrame, resultFrame;
+    private static int roundCounter;
+
 
     public BlackJackGame(User... players) {
+        deck = new Deck();
+        discardPile = new Deck();
         dealer = new Dealer();
-        playingDeck = new Deck();
-        listOfPlayers = new ArrayList<>();
-        for (User user : players)
-            createUser(user.getName());
+        BlackJackGame.players = new ArrayList<>();
+        for (User player : players)
+            createUser(player.getName());
+        roundCounter = 0;
         startRound();
     }
 
-    private void createUser(String username) {
-        listOfPlayers.add(new Player(username));
+    private static void createUser(String username) {
+        players.add(new Player(username));
     }
 
     public void startRound() {
+        if (roundCounter > 0)
+            shuffleHandsIntoDiscardPile();
+        if (deck.getDeck().size() < players.size())
+            deck.replenishWithCards(discardPile);
+
+
         // TODO concurrentFuture
-        for (Player player : listOfPlayers) {
+        for (Player player : players) {
             selectBet(player);
             dealOutPlayersHand(player);
         }
         dealOutDealersHand();
         //while (true) {
-        for (Player player : listOfPlayers)
+        for (Player player : players)
             renderCards(player);
         checkForBlackJacks();
-        for (Player player : listOfPlayers)
+        for (Player player : players)
             makeDecision(player);
         checkForBusts();
-        // }
     }
-
+    
     // Players are dealt two cards face up on the field.
     private void dealOutPlayersHand(Player player) {
-        player.hand.drawCard(playingDeck);
-        player.hand.drawCard(playingDeck);
+        player.hand.drawCard(deck);
+        player.hand.drawCard(deck);
     }
 
     // The dealer also receives two cards. One is face down on the field.
     private void dealOutDealersHand() {
-        dealer.hand.drawCard(playingDeck);
-        dealer.hand.drawCard(playingDeck);
+        dealer.hand.drawCard(deck);
+        dealer.hand.drawCard(deck);
+    }
+
+    private void shuffleHandsIntoDiscardPile() {
+        for (Player player : players)
+            discardPile.addCards(player.hand.getCards());
     }
 
     private void checkForBlackJacks() {
-        for (Player player : listOfPlayers) {
+        for (Player player : players) {
             if (!player.hasBlackJack() && !dealer.hasBlackJack())
                 return;
             else if (player.hasBlackJack()) {
@@ -87,7 +101,7 @@ public class BlackJackGame {
     }
 
     private void checkForBusts() {
-        for (Player player : listOfPlayers)
+        for (Player player : players)
             if (player.isBust()) {
                 getBlackJackGameChannel().sendMessage(player.getName() + " hat sich überkauft und verliert.").queue();
                 player.incrementLooses();
@@ -98,8 +112,8 @@ public class BlackJackGame {
 
     // TODO buttons
     private void makeDecision(Player player) {
-        builder = new EmbedBuilder();
-        builder.setTitle(player.getName() + " hat die Qual der Wahl.")
+        decisionFrame = new EmbedBuilder();
+        decisionFrame.setTitle(player.getName() + " hat die Qual der Wahl.")
                 .setDescription("Triff jetzt eine Entscheidung!")
                 .setColor(Color.GREEN);
 
@@ -108,11 +122,11 @@ public class BlackJackGame {
         Button splitButton = Button.primary("splitButton", "Split");
         Button doubleDownButton = Button.primary("doubleDownButton", "Double down");
         Button surrenderButton = Button.primary("surrenderButton", "Surrender");
-           List<ItemComponent> row1 = new ArrayList<>(List.of(new Button[]{hitButton, standButton, splitButton}));
-           List<ItemComponent> row2 = new ArrayList<>(List.of(new Button[]{doubleDownButton, surrenderButton}));
-       getBlackJackGameChannel()
-               .sendMessageEmbeds(builder.build())
-               .addActionRow(row1).addActionRow(row2)
+        List<ItemComponent> row1 = new ArrayList<>(List.of(new Button[]{hitButton, standButton, splitButton}));
+        List<ItemComponent> row2 = new ArrayList<>(List.of(new Button[]{doubleDownButton, surrenderButton}));
+        getBlackJackGameChannel()
+                .sendMessageEmbeds(decisionFrame.build())
+                .addActionRow(row1).addActionRow(row2)
                 .queue(message -> {
                     message.addReaction(Emoji.fromFormatted(":boom:")).queue();
                     message.addReaction(Emoji.fromFormatted(":stop_sign:")).queue();
@@ -128,7 +142,7 @@ public class BlackJackGame {
         boolean hasChosenHitAgain;
         do {
             getBlackJackGameChannel().sendMessage(currentPlayer.getName() + " erhält eine Karte.").queue();
-            currentPlayer.hand.drawCard(playingDeck);
+            currentPlayer.hand.drawCard(deck);
             renderCards(currentPlayer);
             checkForBlackJacks();
             checkForBusts();
@@ -154,11 +168,11 @@ public class BlackJackGame {
         Hand currentHand = currentPlayer.hand;
         currentPlayer.hand = new Hand(
                 currentPlayer.hand.getCard(0),
-                playingDeck.drawCard()
+                deck.drawCard()
         );
         currentPlayer.secondHand = new Hand(
                 currentHand.getCard(1),
-                playingDeck.drawCard()
+                deck.drawCard()
         );
         // TODO bet is possible
     }
@@ -178,41 +192,29 @@ public class BlackJackGame {
 
     // TODO dc-channel
     private void selectBet(Player player) {
-        builder = new EmbedBuilder();
-        builder.setTitle("Auswahl der Einsätze");
-        builder.setDescription("Du kannst 150% des Einsatzes gewinnen, aber auch alles verlieren.");
-        builder.addField(player.getName(), " ist an der Reihe.", false);
-        builder.addField("Verfügbare Chips: " + player.chips,"Wähle deinen Einsatz.", false);
+        betFrame = new EmbedBuilder();
+        betFrame.setTitle("Auswahl der Einsätze");
+        betFrame.setDescription("Du kannst 150% des Einsatzes gewinnen, aber auch alles verlieren.");
+        betFrame.addField(player.getName(), " ist an der Reihe.", false);
+        betFrame.addField("Verfügbare Chips: " + player.chips,"Wähle deinen Einsatz.", false);
         ArrayList<ItemComponent> row1 = new ArrayList<>();
         ArrayList<ItemComponent> row2 = new ArrayList<>();
         for (int coinValue : new int[] { 1, 5, 10, 25, 50})
             row1.add(Button.primary("btnChip" + coinValue, String.valueOf(coinValue)));
         for (int coinValue : new int[] {100, 200, 500, 1000, 5000})
             row2.add(Button.danger("btnChip" + coinValue, String.valueOf(coinValue)));
-        getBlackJackGameChannel().sendMessageEmbeds(builder.build())
+        getBlackJackGameChannel().sendMessageEmbeds(betFrame.build())
                 .addActionRow(row1).addActionRow(row2).queue(message -> Bot.getJda().addEventListener(new ButtonListener(player)));
-        /*int betAmount = 1;
-        if (player.chips > betAmount)
-            player.chips -= betAmount;
-        player.betAmount = betAmount;*/
     }
 
     public void renderCards(Player player) {
-        builder = new EmbedBuilder();
-        builder.setTitle(player.getName() + "'s Hand");
-        builder.setDescription("Punkte: "+ player.hand.calculateValue());
-//        File pngFile1= new File("path_to_first_image");
-//        InputStream firstImageStream = new FileInputStream(firstImageFile);
-//        builder.setImage(firstImageStream, "first_image.png");
-//        File secondImageFile = new File("path_to_second_image");
-//        InputStream secondImageStream = new FileInputStream(secondImageFile);
-//        builder.setThumbnail(secondImageStream, "second_image.png");
-//        MessageEmbed embed = builder.build();
-//        channel.sendMessage(embed).queue();
-        for (int index = 0; index < player.hand.getNumberOfCards(); index++) {
+        betFrame = new EmbedBuilder();
+        betFrame.setTitle(player.getName() + "'s Hand");
+        betFrame.setDescription("Punkte: "+ player.hand.calculateValue());
+        for (int index = 0; index < player.hand.getCards().size(); index++) {
             String cardDescription = player.hand.getCard(index).getCardDescription();
             File pngFile = FileReader.loadCard(cardDescription); //getPathOfCard(cardDescription);
-            getBlackJackGameChannel().sendMessageEmbeds(builder.build())
+            getBlackJackGameChannel().sendMessageEmbeds(betFrame.build())
                     .addFiles(FileUpload.fromData(pngFile))
                     .queue();
         }
