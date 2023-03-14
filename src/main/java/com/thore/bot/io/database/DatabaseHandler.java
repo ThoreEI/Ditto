@@ -18,7 +18,7 @@ public class DatabaseHandler {
     private void createNewTable() throws SQLException {
         this.getConnection().createStatement().execute(
                 "CREATE TABLE IF NOT EXISTS t_blackJackPlayer ("
-                        + "PlayerID BIGINT AUTO_INCREMENT PRIMARY KEY,"
+                        + "PlayerID BIGINT PRIMARY KEY,"
                         + "Name VARCHAR (100) NOT NULL,"
                         + "Coins INTEGER DEFAULT 0 NOT NULL,"
                         + "Games INTEGER DEFAULT 0 NOT NULL,"
