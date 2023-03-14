@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.interactions.components.ItemComponent;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
 import net.dv8tion.jda.api.utils.FileUpload;
 
 import java.awt.*;
@@ -201,6 +202,7 @@ public class BlackJackGame {
         builder = new EmbedBuilder();
         builder.setTitle(player.getName() + "'s Hand");
         builder.setDescription("Punkte: "+ player.hand.calculateValue());
+        ArrayList<File> files = new ArrayList<>();
 //        File pngFile1= new File("path_to_first_image");
 //        InputStream firstImageStream = new FileInputStream(firstImageFile);
 //        builder.setImage(firstImageStream, "first_image.png");
@@ -212,9 +214,13 @@ public class BlackJackGame {
         for (int index = 0; index < player.hand.getNumberOfCards(); index++) {
             String cardDescription = player.hand.getCard(index).getCardDescription();
             File pngFile = FileReader.loadCard(cardDescription); //getPathOfCard(cardDescription);
-            getBlackJackGameChannel().sendMessageEmbeds(builder.build())
-                    .addFiles(FileUpload.fromData(pngFile))
-                    .queue();
+            files.add(pngFile);
         }
+
+        MessageCreateAction messageAction = getBlackJackGameChannel().sendMessageEmbeds(builder.build());
+        for (File file : files) {
+            messageAction.addFiles(FileUpload.fromData(file));
+        }
+        messageAction.queue();
     }
 }
