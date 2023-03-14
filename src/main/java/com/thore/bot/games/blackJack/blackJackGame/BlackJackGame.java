@@ -37,8 +37,9 @@ public class BlackJackGame {
     }
 
     public void startRound() {
+        // TODO concurrentFuture
         for (Player player : listOfPlayers) {
-            placeBet(player);
+            selectBet(player);
             dealOutPlayersHand(player);
         }
         dealOutDealersHand();
@@ -118,7 +119,7 @@ public class BlackJackGame {
                     message.addReaction(Emoji.fromFormatted(":scissors:")).queue();
                     message.addReaction(Emoji.fromFormatted(":repeat:")).queue();
                     message.addReaction(Emoji.fromFormatted(":white_flag")).queue();
-                    Bot.getJda().addEventListener(new ButtonListener(player, message));
+                    Bot.getJda().addEventListener(new ButtonListener(player));
                 });
     }
 
@@ -176,7 +177,7 @@ public class BlackJackGame {
     }
 
     // TODO dc-channel
-    private void placeBet(Player player) {
+    private void selectBet(Player player) {
         builder = new EmbedBuilder();
         builder.setTitle("Auswahl der Einsätze");
         builder.setDescription("Du kannst 150% des Einsatzes gewinnen, aber auch alles verlieren.");
@@ -189,11 +190,11 @@ public class BlackJackGame {
         for (int coinValue : new int[] {100, 200, 500, 1000, 5000})
             row2.add(Button.danger("btnChip" + coinValue, String.valueOf(coinValue)));
         getBlackJackGameChannel().sendMessageEmbeds(builder.build())
-                .addActionRow(row1).addActionRow(row2).queue();
-        int betAmount = 1;
+                .addActionRow(row1).addActionRow(row2).queue(message -> Bot.getJda().addEventListener(new ButtonListener(player)));
+        /*int betAmount = 1;
         if (player.chips > betAmount)
             player.chips -= betAmount;
-        player.betAmount = betAmount;
+        player.betAmount = betAmount;*/
     }
 
     public void renderCards(Player player) {
