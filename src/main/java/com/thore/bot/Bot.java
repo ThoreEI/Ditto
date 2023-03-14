@@ -12,6 +12,13 @@ public class Bot {
     private static JDA jda;
     private static Dotenv config;
 
+    public static JDA getJda() {
+        return jda;
+    }
+    public static Dotenv getConfig () {
+        return config;
+    }
+
     public static void main(String[] args) {
         config = Dotenv.configure().load();
         JDABuilder builder = JDABuilder.createDefault(config.get("TOKEN"));
@@ -30,14 +37,6 @@ public class Bot {
         } catch (InterruptedException e) {
             System.err.println("The API couldn't connect to the server.");
         }
-    }
-
-    public static JDA getJda() {
-        return jda;
-    }
-
-    public static Dotenv getConfig () {
-        return config;
     }
 
 }
